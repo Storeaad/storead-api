@@ -1,8 +1,10 @@
-package com.storead.client.auth.dto
+package com.storead.auth.client.auth.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.storead.auth.application.request.AuthServiceRequest
+import com.storead.auth.domain.PlatformType
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,7 +12,16 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 data class KakaoUserResponse(
     val id: String,
     val kakaoAccount: KakaoAccount,
-)
+) {
+    fun toServiceRequest(): AuthServiceRequest {
+        return AuthServiceRequest(
+            name = kakaoAccount.profile.nickname,
+            email = kakaoAccount.email,
+            platformId = this.id,
+            platform = PlatformType.KAKAO,
+        )
+    }
+}
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KakaoAccount(
