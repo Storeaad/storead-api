@@ -1,28 +1,52 @@
-package com.storead.config
+package com.storead.config.security
 
+import com.storead.auth.application.AuthService
+import com.storead.auth.application.TokenService
+import com.storead.config.security.jwt.JwtAuthenticationFilter
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
+
 @Configuration
 @EnableWebSecurity
-class SecurityConfig {
+class SecurityConfig(
+    private val tokenService: TokenService,
+    private val authService: AuthService,
+) {
 
     private val ALLOW_ALL_URL: List<String> = listOf(
         "/api/v1/auth/**",
     )
 
+    @Bean
+    fun jwtAuthenticationFilter(): JwtAuthenticationFilter = JwtAuthenticationFilter(tokenService, authService)
+
+    @Bean
+    @ConditionalOnProperty(name = ["spring.h2.console.enabled"], havingValue = "true")
+    fun configureH2ConsoleEnable(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web: WebSecurity ->
+            web.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+        }
+    }
 
     @Bean
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
+            .cors { }
             .csrf { it.disable() }
             .formLogin { it.disable() }
             .authorizeHttpRequests {
@@ -30,7 +54,7 @@ class SecurityConfig {
                     .anyRequest().authenticated()
             }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
-            .cors { }
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
 
