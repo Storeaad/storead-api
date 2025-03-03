@@ -3,32 +3,34 @@ package com.storead.auth.web
 import com.storead.auth.application.AuthService
 import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.application.response.AuthServiceResponse
-import com.storead.auth.client.auth.KakaoClient
+import com.storead.auth.client.auth.Clients
 import com.storead.auth.web.cookie.Cookie
 import com.storead.auth.web.response.LoginResponse
 import com.storead.common.web.ApiResponse
 import com.storead.config.properties.CookieProperties
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 
 @RestController
 @RequestMapping("/api/v1/auth")
 class AuthController(
-    private val kakaoClient: KakaoClient,
     private val authService: AuthService,
     private val cookieProperties: CookieProperties,
+    private val clients: Clients
 ) {
 
-    @GetMapping("/kakao")
-    fun kakaoLogin(@RequestHeader("Authorization") token: String): ResponseEntity<ApiResponse<LoginResponse>> {
+    @GetMapping("/{platform}")
+    fun login(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("platform") type: String
+    ): ResponseEntity<ApiResponse<LoginResponse>> {
+        val socialClient = clients.getClientByPlatform(type)
 
         val accessTokenOnly: String = token.removePrefix("Bearer ")
-        val serviceRequest: AuthServiceRequest = kakaoClient.getPlatformUserInfoByAccessToken(accessTokenOnly)
+
+        val serviceRequest: AuthServiceRequest = socialClient.getPlatformUserInfoByAccessToken(accessTokenOnly)
         val serviceResponse: AuthServiceResponse = authService.login(serviceRequest)
 
 
@@ -50,6 +52,7 @@ class AuthController(
 
         return ApiResponse.success(LoginResponse(serviceResponse.nickname), cookies)
     }
+
 
     @GetMapping("/logout")
     fun logout(@RequestHeader("Authorization") token: String): ResponseEntity<ApiResponse<String>> {
