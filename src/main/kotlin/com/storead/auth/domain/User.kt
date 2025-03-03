@@ -14,13 +14,10 @@ class User(
     val platformId: String,
 
     @Column(nullable = false)
-    val email: String,
+    val email: String? = "",
 
     val name: String,
 
     @Enumerated(EnumType.STRING)
     val platform: PlatformType,
-
-    ) {
-
-}
+)
