@@ -7,10 +7,7 @@ import com.storead.auth.domain.RefreshToken
 import com.storead.auth.domain.RefreshTokenRepository
 import com.storead.auth.domain.User
 import com.storead.config.properties.JwtProperties
-import io.jsonwebtoken.Claims
-import io.jsonwebtoken.Jws
-import io.jsonwebtoken.JwtException
-import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.*
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -26,10 +23,14 @@ class TokenService(
     private val authRepository: AuthRepository,
 ) {
 
-    fun createAccessToken(payload: User): String = Jwts.builder()
+    fun createAccessToken(payload: User, expired: Date? = null): String = Jwts.builder()
         .subject(payload.id.toString())
         .issuedAt(Date())
-        .expiration(Date.from(Instant.now().plus(jwtProperties.accessTokenLifetimeMinutes, ChronoUnit.MINUTES)))
+        .expiration(
+            expired ?: Date.from(
+                Instant.now().plus(jwtProperties.accessTokenLifetimeMinutes, ChronoUnit.MINUTES)
+            )
+        )
         .signWith(jwtProperties.secretKey)
         .compact()
 
@@ -55,7 +56,7 @@ class TokenService(
         val newRefreshToken = createRefreshToken(user)
         val newAccessToken = createAccessToken(user)
 
-        tokenRepository.save(RefreshToken(userId, newRefreshToken))
+        tokenRepository.save(refreshToken.update(newRefreshToken))
 
         return TokenServiceResponse(newAccessToken, newRefreshToken)
     }
@@ -84,8 +85,12 @@ class TokenService(
     }
 
     fun getSubject(token: String): Long {
-        val claims = parseClaims(token)
-        return claims.payload.subject.toLong()
+        return try {
+            val claims = parseClaims(token)
+            claims.payload.subject.toLong()
+        } catch (e: ExpiredJwtException) {
+            e.claims.subject.toLong()
+        }
     }
 
     private fun parseClaims(token: String): Jws<Claims> = Jwts.parser()
