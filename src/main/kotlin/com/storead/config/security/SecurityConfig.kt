@@ -28,6 +28,7 @@ class SecurityConfig(
 
     private val ALLOW_ALL_URL: List<String> = listOf(
         "/api/v1/auth/**",
+        "/h2-console/**",
     )
 
     @Bean
@@ -48,6 +49,7 @@ class SecurityConfig(
         return http
             .cors { }
             .csrf { it.disable() }
+            .headers { headers -> headers.frameOptions { it.disable() } }
             .formLogin { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(*ALLOW_ALL_URL.toTypedArray()).permitAll()
