@@ -17,17 +17,21 @@ class JwtAuthenticationFilter(
     private val authService: AuthService
 ) : OncePerRequestFilter() {
 
+    private val ALLOW_ALL_URL: List<String> = listOf(
+        "/api/v1/auth/",
+        "/h2-console/",
+        "/favicon.ico",
+    )
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        if (request.requestURI.startsWith("/api/v1/auth/")) {
+        if (ALLOW_ALL_URL.any { request.requestURI.startsWith(it) }) {
             filterChain.doFilter(request, response)
-            println("> should not filter auth url!!!")
             return
         }
-
         val accessToken: String = resolveToken(request) ?: throw IllegalArgumentException("Access token not found")
 
         if (tokenService.validate(accessToken)) {
