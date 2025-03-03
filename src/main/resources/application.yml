@@ -8,9 +8,29 @@ spring:
     username: sa
     password:
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: ${REDIS_USER}
+      password: ${REDIS_PASSWORD}
+
   jpa:
     hibernate:
       ddl-auto: none
+
+  security:
+    jwt:
+      token:
+        secret: ${JWT_SECRET}
+        access-token-lifetime-minutes: ${ACCESS_TOKEN_LIFETIME}
+        refresh-token-lifetime-days: ${REFRESH_TOKEN_LIFETIME}
+      cookie:
+        access-token-name: "accessToken"
+        refresh-token-name: "refreshToken"
+        access-token-max-age: ${ACCESS_TOKEN_MAX_AGE}
+        refresh-token-max-age: ${REFRESH_TOKEN_MAX_AGE}
+
 
 ---
 
@@ -26,11 +46,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
-    defer-datasource-initialization: true
 
   h2:
     console:
-      enabled: true
+    enabled: true
+
 
 ---
 
@@ -39,7 +59,6 @@ spring:
     activate:
       on-profile: test
 
-
   jpa:
     hibernate:
       ddl-auto: create
@@ -47,7 +66,3 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
-  sql:
-    init:
-      mode: never
