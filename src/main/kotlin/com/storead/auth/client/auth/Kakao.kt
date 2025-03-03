@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
 
 @Component
-class KakaoClient(private val client: RestClient) {
+class Kakao(private val client: RestClient): SocialClient {
 
-    fun getPlatformUserInfoByAccessToken(accessToken: String): AuthServiceRequest {
+    override fun getPlatformUserInfoByAccessToken(accessToken: String): AuthServiceRequest {
         val uri = "https://kapi.kakao.com/v2/user/me"
 
         return client.get()
