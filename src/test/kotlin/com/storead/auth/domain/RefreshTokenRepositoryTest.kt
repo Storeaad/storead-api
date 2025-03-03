@@ -28,7 +28,7 @@ class RefreshTokenRepositoryTest(
         }
 
         `when`("존재하지 않는 사용자 ID로 조회하는 경우") {
-            val nonExistentUserId: Long = 2
+            val nonExistentUserId: Long = 9999
             val actualRefreshToken: RefreshToken? = tokenRepository.findByUserId(nonExistentUserId)
 
             then("null 값이 반환되어야 한다") {
