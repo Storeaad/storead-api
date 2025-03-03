@@ -31,9 +31,9 @@ class AuthService(
     }
 
     fun getUserById(userId: Long): User =
-        authRepository.findByIdOrNull(userId) ?: throw IllegalArgumentException("User not found with id $userId")
+        authRepository.findByIdOrNull(userId) ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
 
-    fun saveUser(request: AuthServiceRequest): User {
+    private fun saveUser(request: AuthServiceRequest): User {
         return authRepository.save(request.toEntity())
     }
 }
