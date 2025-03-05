@@ -4,12 +4,15 @@ import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.application.response.AuthServiceResponse
 import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.User
+import com.storead.auth.signal.UserCreateEvent
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class AuthService(
     private val authRepository: AuthRepository,
+    private val eventPublisher: ApplicationEventPublisher,
     private val tokenService: TokenService,
 ) {
 
@@ -34,6 +37,9 @@ class AuthService(
         authRepository.findByIdOrNull(userId) ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
 
     private fun saveUser(request: AuthServiceRequest): User {
-        return authRepository.save(request.toEntity())
+        val user: User = authRepository.save(request.toEntity())
+        eventPublisher.publishEvent(UserCreateEvent(user))
+
+        return user
     }
 }
