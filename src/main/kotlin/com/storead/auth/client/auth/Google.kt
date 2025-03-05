@@ -12,9 +12,9 @@ class Google(
 ) : SocialClient {
 
     override fun getPlatformUserInfoByAccessToken(accessToken: String): AuthServiceRequest {
-        val uri = "https://www.googleapis.com/oauth2/v1/tokeninfo"
+        val uri = "https://www.googleapis.com/userinfo/v2/me"
 
-        return client.post()
+        return client.get()
             .uri(uri)
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer $accessToken")

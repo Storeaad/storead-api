@@ -10,14 +10,15 @@ import com.storead.auth.domain.PlatformType
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class GoogleAccountResponse(
-    val userId: String,
+    val id: String,
+    val name: String,
     val email: String
 ) {
     fun toServiceRequest(): AuthServiceRequest {
         return AuthServiceRequest(
-            email.substringBefore("@"),
+            name,
             email,
-            userId,
+            id,
             PlatformType.GOOGLE)
     }
 }
