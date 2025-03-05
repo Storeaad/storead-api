@@ -18,8 +18,8 @@ class JwtAuthenticationFilter(
 ) : OncePerRequestFilter() {
 
     private val ALLOW_ALL_URL: List<String> = listOf(
-        "/api/v1/auth/",
-        "/h2-console/",
+        "/api/v1/auth",
+        "/h2-console",
         "/favicon.ico",
     )
 
