@@ -1,5 +1,6 @@
 package com.storead.auth.domain
 
+import com.storead.profile.domain.Profile
 import jakarta.persistence.*
 
 
@@ -20,4 +21,11 @@ class User(
 
     @Enumerated(EnumType.STRING)
     val platform: PlatformType,
-)
+) {
+    fun toProfile(): Profile {
+        return Profile(
+            profileName = this.name,
+            user = this
+        )
+    }
+}
