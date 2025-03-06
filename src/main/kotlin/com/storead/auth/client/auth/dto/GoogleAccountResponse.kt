@@ -12,13 +12,16 @@ import com.storead.auth.domain.PlatformType
 data class GoogleAccountResponse(
     val id: String,
     val name: String,
-    val email: String
+    val email: String,
+    val picture: String,
 ) {
     fun toServiceRequest(): AuthServiceRequest {
         return AuthServiceRequest(
             name,
             email,
             id,
-            PlatformType.GOOGLE)
+            PlatformType.GOOGLE,
+            picture,
+        )
     }
 }

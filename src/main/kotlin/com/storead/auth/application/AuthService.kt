@@ -8,6 +8,7 @@ import com.storead.auth.signal.UserCreateEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
@@ -16,6 +17,7 @@ class AuthService(
     private val tokenService: TokenService,
 ) {
 
+    @Transactional
     fun login(serviceRequest: AuthServiceRequest): AuthServiceResponse {
         val user: User =
             authRepository.findByPlatformIdAndPlatform(serviceRequest.platformId, serviceRequest.platform) ?: saveUser(
@@ -38,7 +40,7 @@ class AuthService(
 
     private fun saveUser(request: AuthServiceRequest): User {
         val user: User = authRepository.save(request.toEntity())
-        eventPublisher.publishEvent(UserCreateEvent(user))
+        eventPublisher.publishEvent(UserCreateEvent(user, request.profileImageUrl))
 
         return user
     }

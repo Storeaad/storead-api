@@ -15,6 +15,10 @@ class ProfileService(
     @EventListener
     fun userCreateEventListen(event: UserCreateEvent) {
         create(event.instance.toProfile())
+        create(
+            event.instance.toProfile()
+                .uploadProfileImage(event.profileImageUrl)
+        )
     }
 
     fun getMyProfile(userId: Long): ProfileServiceResponse {
@@ -26,7 +30,7 @@ class ProfileService(
         val profile = profileRepository.findByUserId(request.userId) ?: throw IllegalArgumentException("프로필이 존재하지 않는 유저입니다.")
 
         return ProfileServiceResponse(
-            profileRepository.save(profile.update(request))
+            profileRepository.save(profile.update(request, profileImage = profileImage))
         )
     }
 

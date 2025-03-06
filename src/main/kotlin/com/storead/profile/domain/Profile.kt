@@ -26,10 +26,17 @@ class Profile(
     var image: ProfileImage? = null,
 
     ) {
-    fun update(request: ProfileServiceUpdateRequest): Profile {
+
+    fun uploadProfileImage(imageUrl: String): Profile {
+        this.image = ProfileImage(url = imageUrl)
+        return this
+
+    }
+
+    fun update(request: ProfileServiceUpdateRequest, profileImage: ProfileImage?): Profile {
         this.aboutMe = request.aboutMe ?: this.aboutMe
         this.profileName = request.name ?: this.profileName
-        this.image = request.image?.let { ProfileImage(url = it) } ?: this.image
+        this.image = profileImage ?: this.image
 
         return this
     }
