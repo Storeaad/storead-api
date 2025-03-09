@@ -6,6 +6,7 @@ import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.RefreshToken
 import com.storead.auth.domain.RefreshTokenRepository
 import com.storead.auth.domain.User
+import com.storead.auth.exception.AuthException
 import com.storead.config.properties.JwtProperties
 import io.jsonwebtoken.*
 import org.springframework.data.repository.findByIdOrNull
@@ -47,9 +48,9 @@ class TokenService(
 
     fun reIssue(request: TokenServiceRequest): TokenServiceResponse {
         val userId: Long = getSubject(request.accessToken)
-        val user: User = authRepository.findByIdOrNull(userId) ?: throw IllegalArgumentException("User not found")
+        val user: User = authRepository.findByIdOrNull(userId) ?: throw AuthException("유저를 찾을 수 없습니다.")
         val refreshToken: RefreshToken =
-            tokenRepository.findByUserId(userId) ?: throw IllegalArgumentException("토큰이 만료 되었습니다.")
+            tokenRepository.findByUserId(userId) ?: throw AuthException("토큰이 만료 되었습니다.")
 
         require(refreshToken.validate(request.refreshToken))
 
