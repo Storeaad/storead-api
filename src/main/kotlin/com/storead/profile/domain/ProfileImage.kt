@@ -1,5 +1,6 @@
 package com.storead.profile.domain
 
+import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
 
 
@@ -11,5 +12,10 @@ class ProfileImage(
     val id: Long? = null,
 
     @Column(name = "url")
-    val url: String,
-    )
+    var url: String,
+) : BaseEntity() {
+    fun update(updateUrl: String): ProfileImage {
+        this.url = updateUrl
+        return this
+    }
+}

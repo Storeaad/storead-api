@@ -1,6 +1,7 @@
 package com.storead.profile.domain
 
 import com.storead.auth.domain.User
+import com.storead.common.domain.BaseEntity
 import com.storead.profile.application.request.ProfileServiceUpdateRequest
 import jakarta.persistence.*
 
@@ -18,14 +19,14 @@ class Profile(
     var profileName: String,
 
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val user: User? = null,
-
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     var image: ProfileImage? = null,
 
-    ) {
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    val user: User? = null,
+
+    ) : BaseEntity() {
 
     fun uploadProfileImage(imageUrl: String): Profile {
         this.image = ProfileImage(url = imageUrl)
