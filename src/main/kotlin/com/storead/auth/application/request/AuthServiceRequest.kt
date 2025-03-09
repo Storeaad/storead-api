@@ -8,6 +8,7 @@ data class AuthServiceRequest(
     val email: String,
     val platformId: String,
     val platform: PlatformType,
+    val profileImageUrl: String,
 ) {
     fun toEntity(): User {
         return User(

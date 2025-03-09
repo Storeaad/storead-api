@@ -9,7 +9,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
-@DisplayName("리프레시 토큰 레포지토리")
+@DisplayName("리프레시 토큰 레포지토리 도메인 테스트")
 class RefreshTokenRepositoryTest(
     @Autowired private val tokenRepository: RefreshTokenRepository
 ) : BehaviorSpec({

@@ -1,5 +1,6 @@
 package com.storead.auth.client.auth
 
+import com.storead.auth.exception.AuthException
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,6 +16,6 @@ data class Clients(
     )
 
     fun getClientByPlatform(platform: String): SocialClient {
-        return factoryMap[platform.lowercase()] ?: throw IllegalArgumentException("지원하지 않는 소셜 플랫폼입니다.")
+        return factoryMap[platform.lowercase()] ?: throw AuthException("지원하지 않는 소셜 플랫폼입니다.")
     }
 }

@@ -19,6 +19,7 @@ data class KakaoUserResponse(
             email = kakaoAccount.email,
             platformId = this.id,
             platform = PlatformType.KAKAO,
+            profileImageUrl = kakaoAccount.profile.profileImageUrl,
         )
     }
 }
@@ -30,6 +31,8 @@ data class KakaoAccount(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class KakaoProfile(
-    val nickname: String
+    val nickname: String,
+    val profileImageUrl: String
 )

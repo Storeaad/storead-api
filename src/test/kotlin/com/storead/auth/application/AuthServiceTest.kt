@@ -3,6 +3,7 @@ package com.storead.auth.application
 import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.PlatformType
+import com.storead.auth.exception.AuthException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
@@ -14,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
 @SpringBootTest
-@DisplayName("Auth Service 테스트")
+@DisplayName("사용자 인증 서비스 테스트")
 class AuthServiceTest(
     @Autowired private val authService: AuthService,
     @Autowired private val authRepository: AuthRepository,
@@ -30,11 +31,12 @@ class AuthServiceTest(
             email = "test@test.com",
             platformId = "1",
             platform = PlatformType.KAKAO,
+            profileImageUrl = "default"
         )
 
         `when`("소셜 계정 정보로 사용자를 조회하면") {
-                val expected =
-                    authRepository.findByPlatformIdAndPlatform(testAuthRequest.platformId, testAuthRequest.platform)
+            val expected =
+                authRepository.findByPlatformIdAndPlatform(testAuthRequest.platformId, testAuthRequest.platform)
             then("사용자 정보가 존재하지 않아야 한다") {
                 expected.shouldBeNull()
             }
@@ -42,10 +44,10 @@ class AuthServiceTest(
 
         `when`("유저 고유 아이디 값으로 조회하면") {
             then("`유저를 조회할 수 없음` 예외 처리를 반환한다") {
-                val exception = shouldThrow<IllegalArgumentException> {
+                val exception = shouldThrow<AuthException> {
                     authService.getUserById(1L)
                 }
-                exception.message shouldBe "유저를 찾을 수 없습니다."
+                exception.message.shouldBe("유저를 찾을 수 없습니다.")
             }
         }
 
@@ -68,18 +70,19 @@ class AuthServiceTest(
             email = "test@test.com",
             platformId = "1",
             platform = PlatformType.KAKAO,
+            profileImageUrl = "default"
         )
 
-        `when`("소셜 로그인 서비스를 호출하면") {
-            val expected = authService.login(testAuthRequest)
+        val loginResponse = authService.login(testAuthRequest)
 
+        `when`("소셜 로그인 서비스를 호출하면") {
             then("기존 사용자 정보를 반환해야 한다") {
-                expected.nickname.shouldBe("test")
+                loginResponse.user.name.shouldBe("test")
             }
         }
 
         `when`("유저 고유 아이디 값으로 조회하면") {
-            val findUserById = authService.getUserById(1L)
+            val findUserById = authService.getUserById(loginResponse.user.id!!)
             then("유저 정보를 반환한다") {
                 findUserById.name.shouldBe("test")
             }

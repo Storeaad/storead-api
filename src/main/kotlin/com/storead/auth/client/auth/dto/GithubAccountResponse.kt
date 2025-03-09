@@ -12,12 +12,15 @@ import com.storead.auth.domain.PlatformType
 data class GithubAccountResponse(
     val name: String,
     val id: String,
+    val avatarUrl: String,
 ) {
     fun toServiceRequest(): AuthServiceRequest {
         return AuthServiceRequest(
             name = name,
             email = "",
             platformId = id,
-            platform = PlatformType.GOOGLE)
+            platform = PlatformType.GOOGLE,
+            profileImageUrl = avatarUrl,
+        )
     }
 }
