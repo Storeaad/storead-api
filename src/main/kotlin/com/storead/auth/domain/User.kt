@@ -1,7 +1,10 @@
 package com.storead.auth.domain
 
+import com.storead.common.domain.BaseEntity
 import com.storead.profile.domain.Profile
 import jakarta.persistence.*
+import org.springframework.format.annotation.DateTimeFormat
+import java.time.LocalDateTime
 
 
 @Entity
@@ -21,7 +24,19 @@ class User(
 
     @Enumerated(EnumType.STRING)
     val platform: PlatformType,
-) {
+
+    var isActive: Boolean = true,
+
+    @DateTimeFormat
+    var lastLogin: LocalDateTime? = null,
+
+
+    ) : BaseEntity() {
+
+    fun updateLastLogin(lastLogin: LocalDateTime?) {
+        this.lastLogin = lastLogin
+    }
+
     fun toProfile(): Profile {
         return Profile(
             profileName = this.name,

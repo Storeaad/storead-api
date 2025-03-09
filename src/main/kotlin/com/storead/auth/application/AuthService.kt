@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class AuthService(
@@ -25,10 +26,12 @@ class AuthService(
                 serviceRequest
             )
 
+        user.updateLastLogin(LocalDateTime.now())
+
         return AuthServiceResponse(
             tokenService.createAccessToken(user),
             tokenService.createRefreshToken(user),
-            user.name,
+            user,
         )
     }
 
