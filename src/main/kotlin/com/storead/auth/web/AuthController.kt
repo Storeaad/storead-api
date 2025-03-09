@@ -50,7 +50,7 @@ class AuthController(
             ).create()
         )
 
-        return ApiResponse.success(LoginResponse(serviceResponse.nickname), cookies)
+        return ApiResponse.success(LoginResponse(serviceResponse.user), cookies)
     }
 
 
