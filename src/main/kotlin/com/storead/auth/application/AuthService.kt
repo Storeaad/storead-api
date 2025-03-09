@@ -4,6 +4,7 @@ import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.application.response.AuthServiceResponse
 import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.User
+import com.storead.auth.exception.AuthException
 import com.storead.auth.signal.UserCreateEvent
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.repository.findByIdOrNull
@@ -36,7 +37,7 @@ class AuthService(
     }
 
     fun getUserById(userId: Long): User =
-        authRepository.findByIdOrNull(userId) ?: throw IllegalArgumentException("유저를 찾을 수 없습니다.")
+        authRepository.findByIdOrNull(userId) ?: throw AuthException("유저를 찾을 수 없습니다.")
 
     private fun saveUser(request: AuthServiceRequest): User {
         val user: User = authRepository.save(request.toEntity())
