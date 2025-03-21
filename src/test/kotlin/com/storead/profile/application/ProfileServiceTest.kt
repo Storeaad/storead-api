@@ -57,7 +57,7 @@ class ProfileServiceTest(
             profileService.userCreateEventListen(userCreateEvent)
 
             then("해당 유저의 프로필이 생성되어야 한다") {
-                profileRepository.findByUserId(user.id!!)!!.profileName.shouldBe("testUser")
+                profileRepository.findByUserId(user.id!!)!!.profileName shouldBe "testUser"
             }
         }
     }
@@ -67,7 +67,7 @@ class ProfileServiceTest(
         `when`("프로필 서비스에 프로필 조회를 요청하면") {
             val profile = profileService.getProfileByUserId(userId)
             then("해당 유저 ID와 일치하는 프로필이 반환되어야 한다") {
-                profile.userId.shouldBe(userId)
+                profile.userId shouldBe userId
             }
         }
     }
@@ -79,7 +79,7 @@ class ProfileServiceTest(
             val updateProfile = profileService.updateProfile(request)
 
             then("응답에 새 이미지 URL이 포함되어야 한다") {
-                updateProfile.image.url.shouldContain("test.png")
+                updateProfile.image.url shouldContain "test.png"
             }
         }
     }

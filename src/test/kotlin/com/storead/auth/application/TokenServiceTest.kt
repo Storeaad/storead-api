@@ -50,7 +50,7 @@ class TokenServiceTest(
             val accessToken: String = tokenService.createAccessToken(testUser)
 
             then("생성된 토큰에는 사용자의 고유 아이디가 포함되어 있어야 한다") {
-                tokenService.getSubject(accessToken).shouldBe(testUser.id)
+                tokenService.getSubject(accessToken) shouldBe testUser.id
             }
         }
     }
@@ -60,7 +60,7 @@ class TokenServiceTest(
             val refreshToken: String = tokenService.createRefreshToken(testUser)
 
             then("발급된 리프레시 토큰이 레디스에 저장되어야 한다") {
-                refreshTokenRepository.findByUserId(testUser.id!!).shouldBe(RefreshToken(testUser.id, refreshToken))
+                refreshTokenRepository.findByUserId(testUser.id!!) shouldBe RefreshToken(testUser.id, refreshToken)
             }
         }
     }

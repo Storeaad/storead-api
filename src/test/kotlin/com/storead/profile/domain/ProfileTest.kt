@@ -32,7 +32,7 @@ class ProfileTest(
             val testProfile = testUser.uploadProfileImage("test")
 
             then("프로필에 이미지가 성공적으로 등록되어야 한다") {
-                testProfile.image!!.url.shouldBe("test")
+                testProfile.image!!.url shouldBe "test"
             }
         }
     }
@@ -53,7 +53,7 @@ class ProfileTest(
             )
 
             then("프로필 이름이 새 값으로 변경되어야 한다") {
-                updateProfile.profileName.shouldBe("updateProfileName")
+                updateProfile.profileName shouldBe "updateProfileName"
             }
         }
 
@@ -64,7 +64,7 @@ class ProfileTest(
             )
 
             then("프로필 소개글이 새 값으로 변경되어야 한다") {
-                updateProfile.aboutMe.shouldBe("updateAboutMe")
+                updateProfile.aboutMe shouldBe "updateAboutMe"
             }
         }
 
@@ -75,10 +75,8 @@ class ProfileTest(
             )
 
             then("프로필 이미지가 새 이미지로 변경되어야 한다") {
-                updateProfile.image!!.url.shouldBe("updateTestImage")
+                updateProfile.image!!.url shouldBe "updateTestImage"
             }
         }
     }
-
-
 })

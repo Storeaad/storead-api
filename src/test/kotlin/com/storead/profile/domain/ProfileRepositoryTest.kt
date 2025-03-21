@@ -39,9 +39,8 @@ class ProfileRepositoryTest(
         `when`("유저 고유 아이디를 입력하면") {
             val profile = profileRepository.findByUserId(user.id!!)!!
             then("해당 유저의 프로필을 반환한다") {
-                profile.profileName.shouldBe("test")
+                profile.profileName shouldBe "test"
             }
         }
     }
-
 })
