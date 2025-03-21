@@ -4,6 +4,6 @@ import com.storead.common.exception.APIException
 import org.springframework.http.HttpStatus
 
 class ProfileException(
-    override val message: String,
+    message: String,
     status: HttpStatus = HttpStatus.BAD_REQUEST,
-): APIException(message)
+): APIException(message, status)
