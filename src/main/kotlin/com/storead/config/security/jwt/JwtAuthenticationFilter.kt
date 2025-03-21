@@ -5,11 +5,13 @@ import com.storead.auth.application.AuthService
 import com.storead.auth.application.TokenService
 import com.storead.auth.domain.User
 import com.storead.common.constants.Headers
+import com.storead.common.exception.APIException
 import com.storead.common.web.ApiResponse
 import com.storead.config.security.jwt.exceptions.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
@@ -31,7 +33,6 @@ class JwtAuthenticationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-
         try {
             if (ALLOW_ALL_URL.any { request.requestURI.startsWith(it) }) {
                 filterChain.doFilter(request, response)
@@ -49,35 +50,50 @@ class JwtAuthenticationFilter(
                 SecurityContextHolder.getContext().authentication = authenticationToken
 
                 filterChain.doFilter(request, response)
+                return
             }
 
             throw JwtAuthenticationException("잘못된 토큰 정보입니다.")
 
-        } catch (e: JwtAuthenticationException) {
+        } catch (e: APIException) {
             SecurityContextHolder.clearContext()
 
             response.contentType = "application/json;charset=UTF-8"
-            response.status = e.status.value()
+            response.status = HttpStatus.UNAUTHORIZED.value()
 
             val apiResponse = ApiResponse(
                 data = "",
-                message = e.message,
-                status = e.status
+                message = e.message ?: e.localizedMessage,
+                status = e.status,
             )
 
             val objectMapper = ObjectMapper()
-            response.writer.write(objectMapper.writeValueAsString(apiResponse))
-            response.writer.flush()
+            val json = objectMapper.writeValueAsString(apiResponse)
+            response.outputStream.write(json.toByteArray(Charsets.UTF_8))
+            response.outputStream.flush()
 
+        } catch (e: Exception) {
+            SecurityContextHolder.clearContext()
+            response.contentType = "application/json;charset=UTF-8"
+            response.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
+
+            val apiResponse = ApiResponse(
+                data = "",
+                message = e.localizedMessage,
+                status = HttpStatus.INTERNAL_SERVER_ERROR
+            )
+            val objectMapper = ObjectMapper()
+            val json = objectMapper.writeValueAsString(apiResponse)
+            response.outputStream.write(json.toByteArray(Charsets.UTF_8))
+            response.outputStream.flush()
         }
     }
 
     private fun resolveToken(request: HttpServletRequest): String? {
-        request.getHeader(Headers.AUTHORIZATION)?.let {
+        return request.getHeader(Headers.AUTHORIZATION)?.let {
             if (it.startsWith(Headers.BEARER_NEXT_SPACE)) {
-                return it.removePrefix(Headers.BEARER_NEXT_SPACE)
-            }
+                it.removePrefix(Headers.BEARER_NEXT_SPACE)
+            } else null
         }
-        return null
     }
 }
