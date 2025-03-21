@@ -17,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.servlet.HandlerExceptionResolver
 
 
 @Configuration
@@ -24,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val tokenService: TokenService,
     private val authService: AuthService,
+    private val handlerExceptionResolver: HandlerExceptionResolver
 ) {
 
     private val ALLOW_ALL_URL: List<String> = listOf(
@@ -32,7 +34,8 @@ class SecurityConfig(
     )
 
     @Bean
-    fun jwtAuthenticationFilter(): JwtAuthenticationFilter = JwtAuthenticationFilter(tokenService, authService)
+    fun jwtAuthenticationFilter(): JwtAuthenticationFilter =
+        JwtAuthenticationFilter(tokenService, authService, handlerExceptionResolver)
 
     @Bean
     @ConditionalOnProperty(name = ["spring.h2.console.enabled"], havingValue = "true")

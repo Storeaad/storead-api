@@ -1,25 +1,23 @@
 package com.storead.config.security.jwt
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.storead.auth.application.AuthService
 import com.storead.auth.application.TokenService
 import com.storead.auth.domain.User
 import com.storead.common.constants.Headers
-import com.storead.common.exception.APIException
-import com.storead.common.web.ApiResponse
 import com.storead.config.security.jwt.exceptions.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.servlet.HandlerExceptionResolver
 
 class JwtAuthenticationFilter(
     private val tokenService: TokenService,
-    private val authService: AuthService
+    private val authService: AuthService,
+    private val handlerExceptionResolver: HandlerExceptionResolver
 ) : OncePerRequestFilter() {
 
     private val ALLOW_ALL_URL: List<String> = listOf(
@@ -55,37 +53,9 @@ class JwtAuthenticationFilter(
 
             throw JwtAuthenticationException("잘못된 토큰 정보입니다.")
 
-        } catch (e: APIException) {
+        } catch (exception: Exception) {
             SecurityContextHolder.clearContext()
-
-            response.contentType = "application/json;charset=UTF-8"
-            response.status = HttpStatus.UNAUTHORIZED.value()
-
-            val apiResponse = ApiResponse(
-                data = "",
-                message = e.message ?: e.localizedMessage,
-                status = e.status,
-            )
-
-            val objectMapper = ObjectMapper()
-            val json = objectMapper.writeValueAsString(apiResponse)
-            response.outputStream.write(json.toByteArray(Charsets.UTF_8))
-            response.outputStream.flush()
-
-        } catch (e: Exception) {
-            SecurityContextHolder.clearContext()
-            response.contentType = "application/json;charset=UTF-8"
-            response.status = HttpStatus.INTERNAL_SERVER_ERROR.value()
-
-            val apiResponse = ApiResponse(
-                data = "",
-                message = e.localizedMessage,
-                status = HttpStatus.INTERNAL_SERVER_ERROR
-            )
-            val objectMapper = ObjectMapper()
-            val json = objectMapper.writeValueAsString(apiResponse)
-            response.outputStream.write(json.toByteArray(Charsets.UTF_8))
-            response.outputStream.flush()
+            handlerExceptionResolver.resolveException(request, response, null, exception)
         }
     }
 
