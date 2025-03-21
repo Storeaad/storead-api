@@ -28,7 +28,6 @@ class ProfileRepositoryTest(
                 profileName = "test", user = user, image = profileImage
             )
         )
-        println("userId: ${user.id}")
     }
 
     afterSpec {
