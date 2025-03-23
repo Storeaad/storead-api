@@ -80,7 +80,9 @@ class FollowController(
         @RequestParam("cursor", required = false) cursor: Long?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse =
-            followService.getFollowing(FollowingRequest(fromProfileId, cursor))
+            followService.getFollowing(
+                FollowingRequest(fromProfileId, cursor).toFollowRelationshipServiceRequest()
+            )
 
         return ApiResponse.success(
             data = followResponse.toFollowingResponse(),
@@ -104,7 +106,9 @@ class FollowController(
         @RequestParam("cursor", required = false) cursor: Long?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse =
-            followService.getFollowers(FollowingRequest(fromProfileId, cursor))
+            followService.getFollowers(
+                FollowingRequest(fromProfileId, cursor).toFollowRelationshipServiceRequest()
+            )
 
         return ApiResponse.success(
             data = followResponse.toFollowingResponse(),
@@ -126,7 +130,9 @@ class FollowController(
         @PathVariable profileId: Long,
         @RequestParam("cursor", required = false) cursor: Long?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
-        val followResponse: FollowRelationshipResponse = followService.getFollowers(FollowingRequest(profileId, cursor))
+        val followResponse: FollowRelationshipResponse = followService.getFollowers(
+            FollowingRequest(profileId, cursor).toFollowRelationshipServiceRequest()
+        )
 
         return ApiResponse.success(
             data = followResponse.toFollowingResponse(),
@@ -148,7 +154,9 @@ class FollowController(
         @PathVariable profileId: Long,
         @RequestParam("cursor", required = false) cursor: Long?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
-        val followResponse: FollowRelationshipResponse = followService.getFollowing(FollowingRequest(profileId, cursor))
+        val followResponse: FollowRelationshipResponse = followService.getFollowing(
+            FollowingRequest(profileId, cursor).toFollowRelationshipServiceRequest()
+        )
 
         return ApiResponse.success(
             data = followResponse.toFollowingResponse(),

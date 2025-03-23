@@ -1,9 +1,8 @@
 package com.storead.profile.domain
 
+import com.storead.profile.application.request.FollowRelationshipServiceRequest
 import com.storead.profile.application.response.FollowRelationshipResponse
 import com.storead.profile.application.response.ProfileServiceResponse
-import com.storead.profile.exception.FollowException
-import com.storead.profile.web.request.FollowingRequest
 
 data class Relationship(
     private val follows: List<Follow>,
@@ -19,6 +18,7 @@ data class Relationship(
 
     fun toFollowRelationshipResponseByFollowing(request: FollowingRequest): FollowRelationshipResponse {
         val following = follows.map { ProfileServiceResponse(it.from) }
+    fun toFollowRelationshipResponseByFollowing(request: FollowRelationshipServiceRequest): FollowRelationshipResponse {
         val cursor = getCursor(request)
 
         return FollowRelationshipResponse(following, cursor)
@@ -26,6 +26,7 @@ data class Relationship(
 
     fun toFollowRelationshipResponseByFollowers(request: FollowingRequest): FollowRelationshipResponse {
         val followers = follows.map { ProfileServiceResponse(it.to) }
+    fun toFollowRelationshipResponseByFollowers(request: FollowRelationshipServiceRequest): FollowRelationshipResponse {
         val cursor = getCursor(request)
 
         return FollowRelationshipResponse(followers, cursor)
@@ -33,9 +34,9 @@ data class Relationship(
 
 
     private fun getCursor(
-        request: FollowingRequest,
-    ) = if (hasNext(request)) follows[request.limit - 1].id.toString() else null
+        request: FollowRelationshipServiceRequest,
+    ) = if (hasNext(request)) follows.last().id.toString() else null
 
-    private fun hasNext(request: FollowingRequest) = follows.size > request.limit
+    private fun hasNext(request: FollowRelationshipServiceRequest) = follows.size > request.limit
 
 }

@@ -1,12 +1,12 @@
 package com.storead.profile.application
 
+import com.storead.profile.application.request.FollowRelationshipServiceRequest
 import com.storead.profile.application.request.FollowServiceRequest
 import com.storead.profile.application.response.FollowRelationshipResponse
 import com.storead.profile.application.response.FollowServiceResponse
 import com.storead.profile.domain.*
 import com.storead.profile.exception.FollowException
 import com.storead.profile.exception.ProfileException
-import com.storead.profile.web.request.FollowingRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,10 +15,10 @@ class FollowService(
     private val profileRepository: ProfileRepository,
 ) {
 
-    fun getFollowing(following: FollowingRequest): FollowRelationshipResponse {
-        val followingQueryResult: Relationship = Relationship.from(
+    fun getFollowing(following: FollowRelationshipServiceRequest): FollowRelationshipResponse {
+        val followingQueryResult = Relationship(
             followRepository.findFollowingByFromId(
-                profileId = following.fromProfileId,
+                profileId = following.from,
                 limit = following.limit + 1,
                 cursor = following.cursor
             )
@@ -27,10 +27,10 @@ class FollowService(
         return followingQueryResult.toFollowRelationshipResponseByFollowing(following)
     }
 
-    fun getFollowers(followerRequest: FollowingRequest): FollowRelationshipResponse {
-        val followersQueryResult = Relationship.from(
+    fun getFollowers(followerRequest: FollowRelationshipServiceRequest): FollowRelationshipResponse {
+        val followersQueryResult = Relationship(
             followRepository.findFollowersByToId(
-                profileId = followerRequest.fromProfileId,
+                profileId = followerRequest.from,
                 limit = followerRequest.limit + 1,
                 cursor = followerRequest.cursor
             )
