@@ -4,6 +4,6 @@ import com.storead.common.exception.APIException
 import org.springframework.http.HttpStatus
 
 class JwtAuthenticationException(
-    override val message: String,
-    val status: HttpStatus = HttpStatus.UNAUTHORIZED
-) : APIException(message)
+    message: String,
+    status: HttpStatus = HttpStatus.UNAUTHORIZED
+) : APIException(message, status)

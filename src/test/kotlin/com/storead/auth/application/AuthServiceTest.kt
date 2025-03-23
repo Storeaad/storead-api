@@ -47,7 +47,7 @@ class AuthServiceTest(
                 val exception = shouldThrow<AuthException> {
                     authService.getUserById(1L)
                 }
-                exception.message.shouldBe("유저를 찾을 수 없습니다.")
+                exception.message shouldBe "유저를 찾을 수 없습니다."
             }
         }
 
@@ -59,7 +59,7 @@ class AuthServiceTest(
                     testAuthRequest.platformId,
                     testAuthRequest.platform
                 )!!
-                expected.name.shouldBe("test")
+                expected.name shouldBe "test"
             }
         }
     }
@@ -77,14 +77,14 @@ class AuthServiceTest(
 
         `when`("소셜 로그인 서비스를 호출하면") {
             then("기존 사용자 정보를 반환해야 한다") {
-                loginResponse.user.name.shouldBe("test")
+                loginResponse.user.name shouldBe "test"
             }
         }
 
         `when`("유저 고유 아이디 값으로 조회하면") {
             val findUserById = authService.getUserById(loginResponse.user.id!!)
             then("유저 정보를 반환한다") {
-                findUserById.name.shouldBe("test")
+                findUserById.name shouldBe "test"
             }
         }
     }

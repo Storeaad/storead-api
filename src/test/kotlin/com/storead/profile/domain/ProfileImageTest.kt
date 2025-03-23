@@ -37,7 +37,7 @@ class ProfileImageTest(
                 profileImage.update(newProfileImageUrl)
             )
             then("프로필 이미지가 새 URL로 변경되어야 한다") {
-                profileImageRepository.findById(savedProfileImage.id!!).get().url.shouldBe("update")
+                profileImageRepository.findById(savedProfileImage.id!!).get().url shouldBe "update"
             }
         }
     }
