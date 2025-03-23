@@ -7,26 +7,15 @@ import com.storead.profile.application.response.ProfileServiceResponse
 data class Relationship(
     private val follows: List<Follow>,
 ) {
-    companion object {
-        fun from(follows: List<Follow>): Relationship {
-            if (follows.isEmpty()) {
-                throw throw FollowException("해당 유저를 찾지 못하였습니다.")
-            }
-            return Relationship(follows)
-        }
-    }
-
-    fun toFollowRelationshipResponseByFollowing(request: FollowingRequest): FollowRelationshipResponse {
-        val following = follows.map { ProfileServiceResponse(it.from) }
     fun toFollowRelationshipResponseByFollowing(request: FollowRelationshipServiceRequest): FollowRelationshipResponse {
+        val following = follows.take(request.limit).map { ProfileServiceResponse(it.to) }
         val cursor = getCursor(request)
 
         return FollowRelationshipResponse(following, cursor)
     }
 
-    fun toFollowRelationshipResponseByFollowers(request: FollowingRequest): FollowRelationshipResponse {
-        val followers = follows.map { ProfileServiceResponse(it.to) }
     fun toFollowRelationshipResponseByFollowers(request: FollowRelationshipServiceRequest): FollowRelationshipResponse {
+        val followers = follows.take(request.limit).map { ProfileServiceResponse(it.from) }
         val cursor = getCursor(request)
 
         return FollowRelationshipResponse(followers, cursor)
