@@ -54,70 +54,7 @@ class FollowRepositoryTest(
         }
     }
 
-    given("해당 사용자가 2명의 팔로워를 가지고 있고, 조회 제한이 2로 설정된 경우") {
-        val limit = 2
-
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
-
-        followRepository.save(
-            Follow(
-                from = testProfile1,
-                to = testProfile2
-            )
-        )
-        followRepository.save(
-            Follow(
-                from = testProfile1,
-                to = testProfile3
-            )
-        )
-
-        `when`("해당 사용자의 팔로워 목록을 제한(2)개로 조회하면") {
-            val followers: List<Follow> = followRepository.findFollowersByToId(testProfile1.id!!, limit = limit)
-            then("팔로워 목록을 최신 순서대로 모두 반환한다") {
-                followers.map { it.to } shouldContain testProfile3 shouldHaveSize 2
-            }
-        }
-    }
-
-    given("해당 사용자가 3명의 팔로워를 가지고 있고, 조회 제한이 2로 설정된 경우") {
-        val limit = 2
-
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
-        val testProfile4 = profileRepository.saveAndFlush(Profile(profileName = "test4"))
-
-        followRepository.save(
-            Follow(
-                from = testProfile1,
-                to = testProfile2
-            )
-        )
-        followRepository.save(
-            Follow(
-                from = testProfile1,
-                to = testProfile3
-            )
-        )
-        followRepository.save(
-            Follow(
-                from = testProfile1,
-                to = testProfile4
-            )
-        )
-
-        `when`("해당 사용자의 팔로워 목록을 제한(2)개로 조회하면") {
-            val followers: List<Follow> = followRepository.findFollowersByToId(testProfile1.id!!, limit = limit)
-            then("최신 팔로워 순서대로 2명의 팔로워만 반환된다") {
-                followers.map { it.to } shouldNotContain testProfile1 shouldHaveSize 2
-            }
-        }
-    }
-
-    given("해당 사용자를 2명이 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
+    given("2명의 사용자가 1번 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
         val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
@@ -137,15 +74,15 @@ class FollowRepositoryTest(
             )
         )
 
-        `when`("해당 사용자의 팔로잉 목록을 제한(2)개로 조회하면") {
-            val followers: List<Follow> = followRepository.findFollowingByFromId(testProfile1.id!!, limit = limit)
-            then("팔로잉 목록을 최신 순서대로 모두 반환한다") {
-                followers.map { it.from } shouldContain testProfile2 shouldContain testProfile3 shouldHaveSize 2
+        `when`("해당 사용자의 팔로워 목록을 제한(2)개로 조회하면") {
+            val followers: List<Follow> = followRepository.findFollowersByToId(testProfile1.id!!, limit = limit)
+            then("팔로워 목록을 최신 순서대로 모두 반환한다") {
+                followers.map { it.from } shouldContain testProfile3 shouldHaveSize 2
             }
         }
     }
 
-    given("해당 사용자를 3명이 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
+    given("3명의 사용자가 1번 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
         val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
@@ -173,10 +110,73 @@ class FollowRepositoryTest(
         )
 
         `when`("해당 사용자의 팔로워 목록을 제한(2)개로 조회하면") {
+            val followers: List<Follow> = followRepository.findFollowersByToId(testProfile1.id!!, limit = limit)
+            then("최신 팔로워 순서대로 2명의 팔로워만 반환된다") {
+                followers.map { it.from } shouldNotContain testProfile1 shouldHaveSize 2
+            }
+        }
+    }
+
+    given("1번 유저가 2명의 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
+        val limit = 2
+
+        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
+        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
+        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
+
+        followRepository.save(
+            Follow(
+                from = testProfile1,
+                to = testProfile2
+            )
+        )
+        followRepository.save(
+            Follow(
+                from = testProfile1,
+                to = testProfile3
+            )
+        )
+
+        `when`("해당 사용자의 팔로잉 목록을 제한(2)개로 조회하면") {
+            val following: List<Follow> = followRepository.findFollowingByFromId(testProfile1.id!!, limit = limit)
+            then("팔로잉 목록을 최신 순서대로 모두 반환한다") {
+                following.map { it.to } shouldContain testProfile2 shouldContain testProfile3 shouldHaveSize 2
+            }
+        }
+    }
+
+    given("1번 유저가 3명의 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
+        val limit = 2
+
+        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
+        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
+        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
+        val testProfile4 = profileRepository.saveAndFlush(Profile(profileName = "test4"))
+
+        followRepository.save(
+            Follow(
+                from = testProfile1,
+                to = testProfile2
+            )
+        )
+        followRepository.save(
+            Follow(
+                from = testProfile1,
+                to = testProfile3
+            )
+        )
+        followRepository.save(
+            Follow(
+                from = testProfile1,
+                to = testProfile4
+            )
+        )
+
+        `when`("해당 사용자의 팔로워 목록을 제한(2)개로 조회하면") {
             val followers: List<Follow> =
                 followRepository.findFollowingByFromId(testProfile1.id!!, limit = limit)
             then("최신 팔로워 순서대로 2명의 팔로워만 반환된다") {
-                followers.map { it.from } shouldNotContain testProfile2 shouldHaveSize 2
+                followers.map { it.to } shouldNotContain testProfile2 shouldHaveSize 2
             }
         }
     }
