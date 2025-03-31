@@ -2,7 +2,14 @@ package com.storead.book.domain
 
 import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
+import kotlinx.serialization.Serializable
+import org.hibernate.annotations.UuidGenerator
 import java.time.LocalDate
+import java.util.*
+
+
+@Serializable
+data class BookIsbn(val isbn: String)
 
 
 @Entity
@@ -19,11 +26,12 @@ class Book(
     val publishDate: LocalDate,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    @UuidGenerator
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "UUID")
+    val id: UUID? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    val image: BookThumbnailImage? = null,
+    val image: String? = null,
 
-    ): BaseEntity() {
+    ) : BaseEntity() {
 }
