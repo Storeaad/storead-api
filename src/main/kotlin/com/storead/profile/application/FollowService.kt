@@ -8,6 +8,7 @@ import com.storead.profile.domain.*
 import com.storead.profile.exception.FollowException
 import com.storead.profile.exception.ProfileException
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class FollowService(
@@ -39,6 +40,7 @@ class FollowService(
         return followersQueryResult.toFollowRelationshipResponseByFollowers(followerRequest)
     }
 
+    @Transactional
     fun follow(followRequest: FollowServiceRequest): FollowServiceResponse {
         if (followRequest.isSelfFollow()) {
             throw FollowException("자기 자신을 팔로우할 수 없습니다.")
@@ -58,6 +60,7 @@ class FollowService(
         return FollowServiceResponse(follow)
     }
 
+    @Transactional
     fun unfollow(followRequest: FollowServiceRequest): FollowServiceResponse {
         if (followRequest.isSelfFollow()) {
             throw FollowException("자기 자신은 팔로우를 취소할 수 없습니다.")

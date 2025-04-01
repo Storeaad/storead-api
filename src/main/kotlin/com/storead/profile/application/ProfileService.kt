@@ -10,6 +10,7 @@ import com.storead.profile.domain.ProfileRepository
 import com.storead.profile.exception.ProfileException
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -37,6 +38,7 @@ class ProfileService(
         return ProfileServiceResponse(profile)
     }
 
+    @Transactional
     fun updateProfile(request: ProfileServiceUpdateRequest): ProfileServiceResponse {
         val profile = profileRepository.findByUserId(request.userId)
             ?: throw IllegalArgumentException("프로필이 존재하지 않는 유저입니다.")

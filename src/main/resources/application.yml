@@ -2,6 +2,10 @@ spring:
   profiles:
     default: local
 
+  mvc:
+    problemdetails:
+      enabled: true
+
   servlet:
     multipart:
       max-file-size: 30MB
