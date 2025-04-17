@@ -1,8 +1,9 @@
 package com.storead.profile.domain
 
 import org.springframework.data.jpa.repository.JpaRepository
+import java.util.UUID
 
 
-interface ProfileRepository: JpaRepository<Profile, Long> {
-    fun findByUserId(userId: Long): Profile?
+interface ProfileRepository: JpaRepository<Profile, UUID> {
+    fun findByUserId(userId: UUID): Profile?
 }

@@ -1,5 +1,6 @@
 package com.storead.article.domain
 
+import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
 import org.hibernate.annotations.UuidGenerator
 import java.util.*
@@ -11,13 +12,7 @@ class Tag(
 
     @Column(nullable = false, length = 50, unique = true)
     val name: String,
-
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
-)
+) : BaseEntity()
 
 
 @Entity
@@ -30,9 +25,4 @@ class Tagging(
     @Column(name = "tag_id", nullable = false)
     val tagId: UUID,
 
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
-)
+) : BaseEntity()

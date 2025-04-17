@@ -2,13 +2,14 @@ package com.storead.auth.domain
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash
+import java.util.UUID
 
 
 @RedisHash(value = "refresh_token", timeToLive = 24 * 60 * 60)
 data class RefreshToken(
 
     @Id
-    val userId: Long? = null,
+    val userId: UUID? = null,
 
     private var refreshToken: String
 ) {

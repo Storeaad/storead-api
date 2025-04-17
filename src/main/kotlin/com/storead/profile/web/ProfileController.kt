@@ -8,6 +8,7 @@ import com.storead.profile.web.response.ProfileResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -23,7 +24,7 @@ class ProfileController(
      * @return 프로필 정보를 담은 응답 객체
      */
     @GetMapping("/{profileId}")
-    fun toProfile(@PathVariable("profileId") profileId: Long): ResponseEntity<ApiResponse<ProfileResponse>> {
+    fun toProfile(@PathVariable("profileId") profileId: UUID): ResponseEntity<ApiResponse<ProfileResponse>> {
         val response = profileService.getProfileByProfileId(profileId)
         return ApiResponse.success(
             ProfileResponse(response),
@@ -42,7 +43,7 @@ class ProfileController(
      */
     @GetMapping("/me")
     fun myProfile(@AuthenticationPrincipal user: User): ResponseEntity<ApiResponse<ProfileResponse>> {
-        val response = profileService.getProfileByUserId(user.id!!)
+        val response = profileService.getProfileByUserId(user.id)
 
         return ApiResponse.success(
             ProfileResponse(response),
@@ -61,8 +62,11 @@ class ProfileController(
      * @return 업데이트된 프로필 정보를 담은 응답 객체
      */
     @PatchMapping("/me/update")
-    fun updateMyProfile(@AuthenticationPrincipal user: User, @ModelAttribute request: ProfileUpdateRequest): ResponseEntity<ApiResponse<ProfileResponse>> {
-        val serviceResponse = profileService.updateProfile(request.toServiceRequest(user.id!!))
+    fun updateMyProfile(
+        @AuthenticationPrincipal user: User,
+        @ModelAttribute request: ProfileUpdateRequest
+    ): ResponseEntity<ApiResponse<ProfileResponse>> {
+        val serviceResponse = profileService.updateProfile(request.toServiceRequest(user.id))
 
         return ApiResponse.success(
             ProfileResponse(serviceResponse),

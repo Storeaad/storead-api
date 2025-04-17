@@ -1,5 +1,6 @@
 package com.storead.auth.application
 
+import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.PlatformType
@@ -43,9 +44,10 @@ class AuthServiceTest(
         }
 
         `when`("유저 고유 아이디 값으로 조회하면") {
+            val uuid = UlidCreator.getMonotonicUlid().toUuid()
             then("`유저를 조회할 수 없음` 예외 처리를 반환한다") {
                 val exception = shouldThrow<AuthException> {
-                    authService.getUserById(1L)
+                    authService.getUserById(uuid)
                 }
                 exception.message shouldBe "유저를 찾을 수 없습니다."
             }

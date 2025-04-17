@@ -1,7 +1,9 @@
 package com.storead.article.domain
 
 import com.storead.common.domain.BaseEntity
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import java.util.*
 
 
@@ -14,9 +16,7 @@ class ArticleView(
 
     var count: Int = 0,
 
-    @Id
-    val id: UUID? = null
-) : BaseEntity() {
+    ) : BaseEntity() {
 
     fun update() {
         count += 1

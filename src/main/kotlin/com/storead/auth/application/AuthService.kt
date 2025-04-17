@@ -11,6 +11,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
 class AuthService(
@@ -39,7 +40,7 @@ class AuthService(
         tokenService.delete(token.removePrefix("Bearer "))
     }
 
-    fun getUserById(userId: Long): User =
+    fun getUserById(userId: UUID): User =
         authRepository.findByIdOrNull(userId) ?: throw AuthException("유저를 찾을 수 없습니다.")
 
     private fun saveUser(request: AuthServiceRequest): User {

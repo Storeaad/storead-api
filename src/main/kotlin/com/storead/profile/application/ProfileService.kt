@@ -11,6 +11,7 @@ import com.storead.profile.exception.ProfileException
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 import kotlin.jvm.optionals.getOrNull
 
 @Service
@@ -27,13 +28,13 @@ class ProfileService(
         )
     }
 
-    fun getProfileByProfileId(profileId: Long): ProfileServiceResponse {
+    fun getProfileByProfileId(profileId: UUID): ProfileServiceResponse {
         val profile = profileRepository.findById(profileId).getOrNull() ?: throw ProfileException("프로필이 존재하지 않는 유저입니다.")
         return ProfileServiceResponse(profile)
     }
 
 
-    fun getProfileByUserId(userId: Long): ProfileServiceResponse {
+    fun getProfileByUserId(userId: UUID): ProfileServiceResponse {
         val profile = profileRepository.findByUserId(userId) ?: throw ProfileException("프로필이 존재하지 않는 유저입니다.")
         return ProfileServiceResponse(profile)
     }

@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
+import java.util.*
 
 class JwtAuthenticationFilter(
     private val tokenService: TokenService,
@@ -41,7 +42,7 @@ class JwtAuthenticationFilter(
                 ?: throw JwtAuthenticationException("액세스 토큰을 찾을 수 없습니다.")
 
             if (tokenService.validate(accessToken)) {
-                val memberId: Long = tokenService.getSubject(accessToken)
+                val memberId: UUID = tokenService.getSubject(accessToken)
                 val user: User = authService.getUserById(memberId)
                 val authenticationToken: Authentication = PreAuthenticatedAuthenticationToken(user, null, ArrayList())
 

@@ -1,7 +1,9 @@
 package com.storead.profile.domain
 
+import java.util.*
+
 interface FollowPagingRepository {
-    fun findFollowingByFromId(profileId: Long, limit: Int, cursor: Long? = null): List<Follow>
-    fun findFollowersByToId(profileId: Long, limit: Int, cursor: Long? = null): List<Follow>
+    fun findFollowingByFromId(profileId: UUID, limit: Int, cursor: UUID? = null): List<Follow>
+    fun findFollowersByToId(profileId: UUID, limit: Int, cursor: UUID? = null): List<Follow>
 
 }

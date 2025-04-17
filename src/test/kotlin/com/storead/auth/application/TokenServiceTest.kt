@@ -27,7 +27,6 @@ class TokenServiceTest(
 
     beforeSpec {
         val user = User(
-            id = 1L,
             name = "testUser",
             email = "testUser@test.com",
             platformId = "1",

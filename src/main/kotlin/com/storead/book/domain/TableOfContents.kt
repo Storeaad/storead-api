@@ -2,8 +2,6 @@ package com.storead.book.domain
 
 import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
-import org.hibernate.annotations.UuidGenerator
-import java.util.*
 
 
 data class RawTableOfContents(val book: Book, val tableOfContents: List<String>) {
@@ -30,12 +28,6 @@ class TableOfContents(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id")
     val book: Book,
-
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
 
     ) : BaseEntity() {
 }

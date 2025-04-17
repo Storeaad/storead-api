@@ -1,10 +1,9 @@
 package com.storead.article.domain
 
-import jakarta.persistence.Column
 import jakarta.persistence.Id
 import org.springframework.data.redis.core.RedisHash
 import java.time.LocalDate
-import java.util.UUID
+import java.util.*
 
 @RedisHash(value = "article_view_record", timeToLive = 24 * 60 * 60)
 class ArticleViewRecord(
