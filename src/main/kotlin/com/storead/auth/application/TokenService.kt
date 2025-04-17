@@ -47,7 +47,7 @@ class TokenService(
     }
 
     fun reIssue(request: TokenServiceRequest): TokenServiceResponse {
-        val userId: Long = getSubject(request.accessToken)
+        val userId: UUID = getSubject(request.accessToken)
         val user: User = authRepository.findByIdOrNull(userId) ?: throw AuthException("유저를 찾을 수 없습니다.")
         val refreshToken: RefreshToken =
             tokenRepository.findByUserId(userId) ?: throw AuthException("토큰이 만료 되었습니다.")
@@ -63,8 +63,8 @@ class TokenService(
     }
 
     fun delete(accessToken: String) {
-        val userId: Long = getSubject(accessToken)
-        tokenRepository.deleteById(userId.toString())
+        val userId: UUID = getSubject(accessToken)
+        tokenRepository.deleteById(userId)
     }
 
     /**
@@ -85,12 +85,12 @@ class TokenService(
         }
     }
 
-    fun getSubject(token: String): Long {
+    fun getSubject(token: String): UUID {
         return try {
             val claims = parseClaims(token)
-            claims.payload.subject.toLong()
+            UUID.fromString(claims.payload.subject)
         } catch (e: ExpiredJwtException) {
-            e.claims.subject.toLong()
+            UUID.fromString(e.claims.subject)
         }
     }
 

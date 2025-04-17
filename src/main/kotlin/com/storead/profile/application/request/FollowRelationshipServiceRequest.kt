@@ -1,7 +1,9 @@
 package com.storead.profile.application.request
 
+import java.util.UUID
+
 data class FollowRelationshipServiceRequest(
-    val from: Long,
+    val from: UUID,
     val limit: Int,
-    val cursor: Long?
+    val cursor: UUID?
 )

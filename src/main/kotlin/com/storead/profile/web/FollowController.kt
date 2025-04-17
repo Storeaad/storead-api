@@ -9,6 +9,7 @@ import com.storead.profile.web.request.FollowingRequest
 import com.storead.profile.web.response.FollowingResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.UUID
 
 
 @RestController
@@ -30,8 +31,8 @@ class FollowController(
      */
     @GetMapping("/{toProfileId}/follow")
     fun follow(
-        @UserProfile fromProfileId: Long,
-        @PathVariable("toProfileId") toProfileId: Long,
+        @UserProfile fromProfileId: UUID,
+        @PathVariable("toProfileId") toProfileId: UUID,
     ): ResponseEntity<ApiResponse<String>> {
         val followResponse = followService.follow(FollowServiceRequest(fromProfileId, toProfileId))
 
@@ -53,8 +54,8 @@ class FollowController(
      */
     @GetMapping("/{toProfileId}/unfollow")
     fun unfollow(
-        @UserProfile fromProfileId: Long,
-        @PathVariable("toProfileId") toProfileId: Long,
+        @UserProfile fromProfileId: UUID,
+        @PathVariable("toProfileId") toProfileId: UUID,
     ): ResponseEntity<ApiResponse<String>> {
         val unfollowResponse = followService.unfollow(FollowServiceRequest(fromProfileId, toProfileId))
 
@@ -76,8 +77,8 @@ class FollowController(
      */
     @GetMapping("/me/following")
     fun myFollowing(
-        @UserProfile fromProfileId: Long,
-        @RequestParam("cursor", required = false) cursor: Long?,
+        @UserProfile fromProfileId: UUID,
+        @RequestParam("cursor", required = false) cursor: UUID?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse =
             followService.getFollowing(
@@ -102,8 +103,8 @@ class FollowController(
      */
     @GetMapping("/me/followers")
     fun myFollowers(
-        @UserProfile fromProfileId: Long,
-        @RequestParam("cursor", required = false) cursor: Long?,
+        @UserProfile fromProfileId: UUID,
+        @RequestParam("cursor", required = false) cursor: UUID?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse =
             followService.getFollowers(
@@ -127,8 +128,8 @@ class FollowController(
      */
     @GetMapping("/{profileId}/followers")
     fun userFollowers(
-        @PathVariable profileId: Long,
-        @RequestParam("cursor", required = false) cursor: Long?,
+        @PathVariable profileId: UUID,
+        @RequestParam("cursor", required = false) cursor: UUID?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse = followService.getFollowers(
             FollowingRequest(profileId, cursor).toFollowRelationshipServiceRequest()
@@ -151,8 +152,8 @@ class FollowController(
      */
     @GetMapping("/{profileId}/following")
     fun userFollowing(
-        @PathVariable profileId: Long,
-        @RequestParam("cursor", required = false) cursor: Long?,
+        @PathVariable profileId: UUID,
+        @RequestParam("cursor", required = false) cursor: UUID?,
     ): ResponseEntity<ApiResponse<FollowingResponse>> {
         val followResponse: FollowRelationshipResponse = followService.getFollowing(
             FollowingRequest(profileId, cursor).toFollowRelationshipServiceRequest()

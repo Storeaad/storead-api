@@ -8,6 +8,7 @@ import com.storead.profile.web.response.ProfileResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
+import java.util.*
 
 
 @RestController
@@ -23,7 +24,7 @@ class ProfileController(
      * @return 프로필 정보를 담은 응답 객체
      */
     @GetMapping("/{profileId}")
-    fun toProfile(@PathVariable("profileId") profileId: Long): ResponseEntity<ApiResponse<ProfileResponse>> {
+    fun toProfile(@PathVariable("profileId") profileId: UUID): ResponseEntity<ApiResponse<ProfileResponse>> {
         val response = profileService.getProfileByProfileId(profileId)
         return ApiResponse.success(
             ProfileResponse(response),

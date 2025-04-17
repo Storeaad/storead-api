@@ -2,6 +2,7 @@ package com.storead.profile.domain
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.stereotype.Repository
+import java.util.*
 
 @Repository
 class FollowPagingRepositoryImpl(
@@ -9,9 +10,9 @@ class FollowPagingRepositoryImpl(
 ) : FollowPagingRepository {
 
     override fun findFollowingByFromId(
-        profileId: Long,
+        profileId: UUID,
         limit: Int,
-        cursor: Long?
+        cursor: UUID?
     ): List<Follow> {
         val follow = QFollow.follow
 
@@ -29,7 +30,7 @@ class FollowPagingRepositoryImpl(
             .fetch()
     }
 
-    override fun findFollowersByToId(profileId: Long, limit: Int, cursor: Long?): List<Follow> {
+    override fun findFollowersByToId(profileId: UUID, limit: Int, cursor: UUID?): List<Follow> {
         val follow = QFollow.follow
 
         var condition = follow.to.id.eq(profileId)
