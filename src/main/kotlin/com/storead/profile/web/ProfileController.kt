@@ -43,7 +43,7 @@ class ProfileController(
      */
     @GetMapping("/me")
     fun myProfile(@AuthenticationPrincipal user: User): ResponseEntity<ApiResponse<ProfileResponse>> {
-        val response = profileService.getProfileByUserId(user.id!!)
+        val response = profileService.getProfileByUserId(user.id)
 
         return ApiResponse.success(
             ProfileResponse(response),
