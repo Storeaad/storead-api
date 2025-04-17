@@ -32,6 +32,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
+    // ULID creator: https://github.com/f4b6a3/ulid-creator
+    implementation("com.github.f4b6a3:ulid-creator:5.1.0")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
