@@ -62,8 +62,11 @@ class ProfileController(
      * @return 업데이트된 프로필 정보를 담은 응답 객체
      */
     @PatchMapping("/me/update")
-    fun updateMyProfile(@AuthenticationPrincipal user: User, @ModelAttribute request: ProfileUpdateRequest): ResponseEntity<ApiResponse<ProfileResponse>> {
-        val serviceResponse = profileService.updateProfile(request.toServiceRequest(user.id!!))
+    fun updateMyProfile(
+        @AuthenticationPrincipal user: User,
+        @ModelAttribute request: ProfileUpdateRequest
+    ): ResponseEntity<ApiResponse<ProfileResponse>> {
+        val serviceResponse = profileService.updateProfile(request.toServiceRequest(user.id))
 
         return ApiResponse.success(
             ProfileResponse(serviceResponse),
