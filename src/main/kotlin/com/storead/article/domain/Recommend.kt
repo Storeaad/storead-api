@@ -1,9 +1,10 @@
 package com.storead.article.domain
 
 import com.storead.common.domain.BaseEntity
-import jakarta.persistence.*
-import org.hibernate.annotations.UuidGenerator
-import java.util.UUID
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import java.util.*
 
 
 @Entity
@@ -15,13 +16,7 @@ class Recommend(
 
     var count: Int = 0,
 
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null
-
-) : BaseEntity() {
+    ) : BaseEntity() {
 
     fun add() {
         count += 1

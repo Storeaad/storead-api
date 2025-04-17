@@ -1,11 +1,10 @@
 package com.storead.book.domain
 
 import com.storead.common.domain.BaseEntity
-import jakarta.persistence.*
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 import kotlinx.serialization.Serializable
-import org.hibernate.annotations.UuidGenerator
 import java.time.LocalDate
-import java.util.*
 
 
 @Serializable
@@ -24,12 +23,6 @@ class Book(
     val description: String,
 
     val publishDate: LocalDate,
-
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
 
     val image: String? = null,
 

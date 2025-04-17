@@ -7,10 +7,6 @@ import jakarta.persistence.*
 @Table(name = "follows")
 class Follow(
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_id")
     val from: Profile,

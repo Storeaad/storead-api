@@ -1,8 +1,8 @@
 package com.storead.article.domain
 
-import jakarta.persistence.*
-import org.hibernate.annotations.UuidGenerator
-import java.util.UUID
+import com.storead.common.domain.BaseEntity
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
 
 
 @Entity
@@ -11,12 +11,7 @@ class ArticleThumbnailImage(
 
     val thumbnailUrl: String,
 
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
-) {
+    ) : BaseEntity() {
 
 
 }

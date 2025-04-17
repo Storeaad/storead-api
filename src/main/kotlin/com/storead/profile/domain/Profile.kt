@@ -8,9 +8,6 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "profiles")
 class Profile(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
 
     @Column(name = "about_me")
     var aboutMe: String = "about me",

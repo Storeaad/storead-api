@@ -1,7 +1,7 @@
 package com.storead.article.domain
 
+import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
-import org.hibernate.annotations.UuidGenerator
 import java.util.*
 
 
@@ -30,13 +30,7 @@ class Article(
     @Column(name = "thumbnail_image_id")
     var thumbnailImageID: UUID? = null,
 
-    @Id
-    @UuidGenerator
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(columnDefinition = "UUID")
-    val id: UUID? = null,
-
-    ) {
+    ) : BaseEntity() {
 
     fun publish() {
         this.publishStatus = ArticlePublishStatus.PUBLISHED
