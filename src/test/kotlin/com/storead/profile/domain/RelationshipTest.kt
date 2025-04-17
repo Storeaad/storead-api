@@ -25,16 +25,16 @@ class RelationshipTest(
 
     given("1번 유저가 2번 유저를 팔로잉 중인 경우") {
         val testProfile1 =
-            Profile(1L, profileName = "test1", user = User(1L, "1", name = "test1", platform = PlatformType.KAKAO))
+            Profile(profileName = "test1", user = User("1", name = "test1", platform = PlatformType.KAKAO))
         val testProfile2 =
-            Profile(2L, profileName = "test2", user = User(2L, "1", name = "test2", platform = PlatformType.KAKAO))
+            Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
 
         val followFromTo = Follow(
             from = testProfile1,
             to = testProfile2
         )
 
-        val request = FollowingRequest(1L).toFollowRelationshipServiceRequest()
+        val request = FollowingRequest(testProfile1.id!!).toFollowRelationshipServiceRequest()
         val follows: Relationship = Relationship(listOf(followFromTo))
         `when`("내가 팔로우 중인 사용자를 조회 하면") {
             val response: FollowRelationshipResponse = follows.toFollowRelationshipResponseByFollowing(request)
@@ -46,16 +46,16 @@ class RelationshipTest(
 
     given("2번 유저가 1번 유저를 팔로잉 중인 경우") {
         val testProfile1 =
-            Profile(1L, profileName = "test1", user = User(1L, "1", name = "test1", platform = PlatformType.KAKAO))
+            Profile(profileName = "test1", user = User("1", name = "test1", platform = PlatformType.KAKAO))
         val testProfile2 =
-            Profile(2L, profileName = "test2", user = User(2L, "1", name = "test2", platform = PlatformType.KAKAO))
+            Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
 
         val followFromTo = Follow(
             from = testProfile2,
             to = testProfile1
         )
 
-        val request = FollowingRequest(1L).toFollowRelationshipServiceRequest()
+        val request = FollowingRequest(testProfile1.id!!).toFollowRelationshipServiceRequest()
         val follows: Relationship = Relationship(listOf(followFromTo))
         `when`("나를 팔로우 중인 사용자를 조회 하면") {
             val response: FollowRelationshipResponse = follows.toFollowRelationshipResponseByFollowers(request)
