@@ -1,5 +1,6 @@
 package com.storead.profile.application
 
+import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.auth.domain.PlatformType
 import com.storead.auth.domain.User
 import com.storead.profile.application.request.FollowRelationshipServiceRequest
@@ -47,26 +48,26 @@ class FollowServiceTest(
         testProfile1 = profileRepository.save(
             Profile(
                 profileName = "test1",
-                user = User(id = null, "1", name = "test1", platform = PlatformType.KAKAO)
+                user = User("1", name = "test1", platform = PlatformType.KAKAO)
             )
         )
         testProfile2 = profileRepository.save(
             Profile(
                 profileName = "test2",
-                user = User(id = null, "2", name = "test2", platform = PlatformType.KAKAO)
+                user = User("2", name = "test2", platform = PlatformType.KAKAO)
             )
         )
         testProfile3 = profileRepository.save(
             Profile(
                 profileName = "test3",
-                user = User(id = null, "3", name = "test3", platform = PlatformType.KAKAO)
+                user = User("3", name = "test3", platform = PlatformType.KAKAO)
             )
         )
 
         testProfile4 = profileRepository.save(
             Profile(
                 profileName = "test4",
-                user = User(id = null, "4", name = "test4", platform = PlatformType.KAKAO)
+                user = User("4", name = "test4", platform = PlatformType.KAKAO)
             )
         )
 
@@ -79,7 +80,7 @@ class FollowServiceTest(
     }
 
     given("팔로우 맺지 않은 사용자에게 팔로우 하는 경우") {
-        val request = FollowServiceRequest(testProfile1.id!!, testProfile2.id!!)
+        val request = FollowServiceRequest(testProfile1.id, testProfile2.id)
         `when`("첫 번째 사용자가 두 번째 사용자에게 팔로우를 요청하면") {
             val response = service.follow(request)
             then("정상적으로 팔로우 관계가 생성되어야 한다") {
@@ -103,7 +104,7 @@ class FollowServiceTest(
         `when`("자기 자신에게 팔로우를 요청하면") {
             then("자기 자신은 팔로우 할 수 없다는 에러가 발생한다") {
                 val exception = shouldThrow<FollowException> {
-                    service.follow(FollowServiceRequest(testProfile1.id!!, testProfile1.id!!))
+                    service.follow(FollowServiceRequest(testProfile1.id, testProfile1.id))
                 }
                 exception.message shouldBe "자기 자신을 팔로우할 수 없습니다."
             }
@@ -112,7 +113,7 @@ class FollowServiceTest(
         `when`("존재 하지 않는 사용자에게 팔로우를 요청하면") {
             then("유저를 찾을 수 없다는 에러가 발생한다") {
                 val exception = shouldThrow<ProfileException> {
-                    service.follow(FollowServiceRequest(testProfile1.id!!, 12345))
+                    service.follow(FollowServiceRequest(testProfile1.id, UlidCreator.getMonotonicUlid().toUuid()))
                 }
                 exception.message shouldBe "해당 프로필을 찾을 수 없습니다."
             }
@@ -120,19 +121,19 @@ class FollowServiceTest(
     }
 
     given("팔로우 맺은 사용자를 끊으려는 경우") {
-        val request = FollowServiceRequest(testProfile1.id!!, testProfile2.id!!)
+        val request = FollowServiceRequest(testProfile1.id, testProfile2.id)
         service.follow(request)
         `when`("첫 번째 사용자가 두 번째 사용자에게 팔로우 끊기를 요청하면") {
             service.unfollow(request)
             then("팔로우 관계가 삭제 된다") {
-                followRepository.existsByFromIdAndToId(testProfile1.id!!, testProfile2.id!!) shouldBe false
+                followRepository.existsByFromIdAndToId(testProfile1.id, testProfile2.id) shouldBe false
             }
         }
 
         `when`("자기 자신에게 팔로우 끊기를 요청하면") {
             then("자기 자신은 팔로우를 끊을 수 없다는 에러가 발생한다") {
                 val exception = shouldThrow<FollowException> {
-                    service.unfollow(FollowServiceRequest(testProfile1.id!!, testProfile1.id!!))
+                    service.unfollow(FollowServiceRequest(testProfile1.id, testProfile1.id))
                 }
                 exception.message shouldBe "자기 자신은 팔로우를 취소할 수 없습니다."
             }
@@ -141,7 +142,7 @@ class FollowServiceTest(
         `when`("존재하지 않는 유저에게 팔로우 끊기를 요청하면") {
             then("팔로우 관계 정보를 찾을 수 없다는 에러가 발생한다") {
                 val exception = shouldThrow<FollowException> {
-                    service.unfollow(FollowServiceRequest(testProfile1.id!!, 12345))
+                    service.unfollow(FollowServiceRequest(testProfile1.id, UlidCreator.getMonotonicUlid().toUuid()))
                 }
                 exception.message shouldBe "팔로우 정보를 찾을 수 없습니다."
             }
@@ -149,9 +150,9 @@ class FollowServiceTest(
     }
 
     given("1번 사용자가 2번 사용자를 팔로우 하고 있는 경우") {
-        service.follow(FollowServiceRequest(testProfile1.id!!, testProfile2.id!!))
+        service.follow(FollowServiceRequest(testProfile1.id, testProfile2.id))
         val request = FollowRelationshipServiceRequest(
-            testProfile1.id!!,
+            testProfile1.id,
             limit = 10,
             cursor = null
         )
@@ -172,16 +173,16 @@ class FollowServiceTest(
     }
 
     given("1번 사용자가 여러 사용자를 팔로우 하고 있는 경우") {
-        val request1 = FollowServiceRequest(testProfile1.id!!, testProfile2.id!!)
-        val request2 = FollowServiceRequest(testProfile1.id!!, testProfile3.id!!)
-        val request3 = FollowServiceRequest(testProfile1.id!!, testProfile4.id!!)
+        val request1 = FollowServiceRequest(testProfile1.id, testProfile2.id)
+        val request2 = FollowServiceRequest(testProfile1.id, testProfile3.id)
+        val request3 = FollowServiceRequest(testProfile1.id, testProfile4.id)
 
         val follow1 = service.follow(request1)
         val follow2 = service.follow(request2)
         val follow3 = service.follow(request3)
 
         val request = FollowRelationshipServiceRequest(
-            testProfile1.id!!,
+            testProfile1.id,
             limit = 2,
             cursor = null
         )
@@ -200,7 +201,7 @@ class FollowServiceTest(
 
         `when`("1번 사용자의 팔로우 정보를 2명으로 제한 하고 커서 값을 입력하고 요청하면") {
             val request = FollowRelationshipServiceRequest(
-                testProfile1.id!!,
+                testProfile1.id,
                 limit = 2,
                 cursor = follow2.follow.id // NOTE: 커서 값은 마지막 조회 된 팔로우 정보의 ID 값보다 작은걸 가져온다
             )
@@ -214,16 +215,16 @@ class FollowServiceTest(
     }
 
     given("1번 사용자를 여러 사용자가 팔로우 하고 있는 경우") {
-        val request1 = FollowServiceRequest(testProfile2.id!!, testProfile1.id!!)
-        val request2 = FollowServiceRequest(testProfile3.id!!, testProfile1.id!!)
-        val request3 = FollowServiceRequest(testProfile4.id!!, testProfile1.id!!)
+        val request1 = FollowServiceRequest(testProfile2.id, testProfile1.id)
+        val request2 = FollowServiceRequest(testProfile3.id, testProfile1.id)
+        val request3 = FollowServiceRequest(testProfile4.id, testProfile1.id)
 
         val follow1 = service.follow(request1)
         val follow2 = service.follow(request2)
         val follow3 = service.follow(request3)
 
         val request = FollowRelationshipServiceRequest(
-            testProfile1.id!!,
+            testProfile1.id,
             limit = 2,
             cursor = null
         )
@@ -242,7 +243,7 @@ class FollowServiceTest(
 
         `when`("1번 사용자의 팔로우 정보를 2명으로 제한 하고 커서 값을 입력하고 요청하면") {
             val request = FollowRelationshipServiceRequest(
-                testProfile1.id!!,
+                testProfile1.id,
                 limit = 2,
                 cursor = follow2.follow.id
             )

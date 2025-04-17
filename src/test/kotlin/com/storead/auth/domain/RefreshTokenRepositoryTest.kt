@@ -1,11 +1,13 @@
 package com.storead.auth.domain
 
+import com.github.f4b6a3.ulid.UlidCreator
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.*
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -15,7 +17,7 @@ class RefreshTokenRepositoryTest(
 ) : BehaviorSpec({
 
     given("리프레시 토큰 저장소에서 사용자 ID로 조회할 때") {
-        val userId: Long = 1
+        val userId: UUID = UlidCreator.getMonotonicUlid().toUuid()
         val expectedRefreshToken = RefreshToken(userId, "testRefreshToken")
         tokenRepository.save(expectedRefreshToken)
 
@@ -28,7 +30,7 @@ class RefreshTokenRepositoryTest(
         }
 
         `when`("존재하지 않는 사용자 ID로 조회하는 경우") {
-            val nonExistentUserId: Long = 9999
+            val nonExistentUserId: UUID = UlidCreator.getMonotonicUlid().toUuid()
             val actualRefreshToken: RefreshToken? = tokenRepository.findByUserId(nonExistentUserId)
 
             then("null 값이 반환되어야 한다") {

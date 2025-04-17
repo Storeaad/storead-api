@@ -1,5 +1,6 @@
 package com.storead.profile.domain
 
+import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.auth.domain.PlatformType
 import com.storead.auth.domain.User
 import com.storead.profile.application.request.ProfileServiceUpdateRequest
@@ -45,10 +46,11 @@ class ProfileTest(
             image = ProfileImage(url = "testProfileImage"),
             user = user,
         )
+        val userId = UlidCreator.getMonotonicUlid().toUuid()
 
         `when`("프로필 이름을 새로운 값으로 업데이트하면") {
             val updateProfile = profile.update(
-                ProfileServiceUpdateRequest(1L, "updateProfileName"),
+                ProfileServiceUpdateRequest(userId, "updateProfileName"),
                 profileImage = null
             )
 
@@ -59,7 +61,7 @@ class ProfileTest(
 
         `when`("새로운 프로필 소개글을 입력하면") {
             val updateProfile = profile.update(
-                ProfileServiceUpdateRequest(1L, aboutMe = "updateAboutMe"),
+                ProfileServiceUpdateRequest(userId, aboutMe = "updateAboutMe"),
                 profileImage = null
             )
 
@@ -70,7 +72,7 @@ class ProfileTest(
 
         `when`("새로운 프로필 이미지를 입력하면") {
             val updateProfile = profile.update(
-                ProfileServiceUpdateRequest(1L),
+                ProfileServiceUpdateRequest(userId),
                 profileImage = ProfileImage(url = "updateTestImage")
             )
 
