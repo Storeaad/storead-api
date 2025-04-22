@@ -84,9 +84,9 @@ class FollowServiceTest(
         `when`("첫 번째 사용자가 두 번째 사용자에게 팔로우를 요청하면") {
             val response = service.follow(request)
             then("정상적으로 팔로우 관계가 생성되어야 한다") {
-                with(response.follow) {
-                    from.profileName shouldBe "test1"
-                    to.profileName shouldBe "test2"
+                with(response) {
+                    fromUser shouldBe "test1"
+                    toUser shouldBe "test2"
                 }
             }
         }
@@ -203,7 +203,7 @@ class FollowServiceTest(
             val request = FollowRelationshipServiceRequest(
                 testProfile1.id,
                 limit = 2,
-                cursor = follow2.follow.id // NOTE: 커서 값은 마지막 조회 된 팔로우 정보의 ID 값보다 작은걸 가져온다
+                cursor = follow2.followId // NOTE: 커서 값은 마지막 조회 된 팔로우 정보의 ID 값보다 작은걸 가져온다
             )
             val following = service.getFollowing(request)
 
@@ -245,7 +245,7 @@ class FollowServiceTest(
             val request = FollowRelationshipServiceRequest(
                 testProfile1.id,
                 limit = 2,
-                cursor = follow2.follow.id
+                cursor = follow2.followId
             )
             val followers = service.getFollowers(request)
 

@@ -1,10 +1,8 @@
 package com.storead.profile.application.response
 
 import com.storead.profile.domain.Profile
-import java.util.*
 
-data class FollowServiceResponse(
-    val followId: UUID,
+data class UnfollowServiceResponse(
     private val from: Profile,
     private val to: Profile,
 ) {

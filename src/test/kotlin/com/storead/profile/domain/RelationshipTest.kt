@@ -30,15 +30,16 @@ class RelationshipTest(
             Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
 
         val followFromTo = Follow(
-            from = testProfile1,
-            to = testProfile2
+            fromId = testProfile1.id,
+            toId = testProfile2.id
         )
+        val profileWithFollowId = FollowingProfile(testProfile2, followFromTo.id) // toProfile
 
-        val request = FollowingRequest(testProfile1.id!!).toFollowRelationshipServiceRequest()
-        val follows: Relationship = Relationship(listOf(followFromTo))
-        `when`("내가 팔로우 중인 사용자를 조회 하면") {
+        val request = FollowingRequest(testProfile1.id).toFollowRelationshipServiceRequest()
+        val follows = Relationship(listOf(profileWithFollowId))
+        `when`("1번 유저가 팔로우 중인 사용자를 조회 하면") {
             val response: FollowRelationshipResponse = follows.toFollowRelationshipResponseByFollowing(request)
-            then("2번 유저가 반환된다") {
+            then("2번 유저가 반환되어야 한다") {
                 response.following.map { it.name }.first() shouldBe "test2"
             }
         }
@@ -51,13 +52,15 @@ class RelationshipTest(
             Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
 
         val followFromTo = Follow(
-            from = testProfile2,
-            to = testProfile1
+            fromId = testProfile2.id,
+            toId = testProfile1.id
         )
 
-        val request = FollowingRequest(testProfile1.id!!).toFollowRelationshipServiceRequest()
-        val follows: Relationship = Relationship(listOf(followFromTo))
-        `when`("나를 팔로우 중인 사용자를 조회 하면") {
+        val profileWithFollowId = FollowerProfile(testProfile2, followFromTo.id) // fromProfile
+
+        val request = FollowingRequest(testProfile2.id).toFollowRelationshipServiceRequest()
+        val follows: Relationship = Relationship(listOf(profileWithFollowId))
+        `when`("1번 유저를 팔로우 중인 사용자를 조회 하면") {
             val response: FollowRelationshipResponse = follows.toFollowRelationshipResponseByFollowers(request)
             then("2번 유저가 반환된다") {
                 response.following.map { it.name }.first() shouldBe "test2"
