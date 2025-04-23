@@ -44,9 +44,7 @@ data class Relationship(
     }
 
 
-    private fun getCursor(
-        request: FollowRelationshipServiceRequest,
-    ) = if (hasNext(request)) follows.last().followId.toString() else null
+    private fun getCursor(request: FollowRelationshipServiceRequest) = follows.takeIf { hasNext(request) }?.lastOrNull()?.followId.toString()
 
     private fun hasNext(request: FollowRelationshipServiceRequest) = follows.size > request.limit
 
