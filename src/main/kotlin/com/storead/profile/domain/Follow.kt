@@ -2,19 +2,17 @@ package com.storead.profile.domain
 
 import com.storead.common.domain.BaseEntity
 import jakarta.persistence.*
+import java.util.UUID
 
 @Entity
 @Table(name = "follows")
 class Follow(
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "from_id")
-    val from: Profile,
+    @Column(name = "follower_id", nullable = false)
+    val fromId: UUID,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "to_id")
-    val to: Profile,
-
+    @Column(name = "following_id", nullable = false)
+    val toId: UUID,
 
     ) : BaseEntity() {
 }

@@ -19,7 +19,7 @@ data class GithubAccountResponse(
             name = name,
             email = "",
             platformId = id,
-            platform = PlatformType.GOOGLE,
+            platform = PlatformType.GITHUB,
             profileImageUrl = avatarUrl,
         )
     }

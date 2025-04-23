@@ -16,14 +16,13 @@ class FollowPagingRepositoryImpl(
     ): List<Follow> {
         val follow = QFollow.follow
 
-        var condition = follow.from.id.eq(profileId)
+        val isFollowingProfile = follow.fromId.eq(profileId)
 
-        if (cursor != null) {
-            condition = condition.and(follow.id.lt(cursor))
-        }
+        val condition = cursor?.let {
+            isFollowingProfile.and(follow.id.lt(it))
+        } ?: isFollowingProfile
 
         return queryFactory.selectFrom(follow)
-            .join(follow.to).fetchJoin()
             .where(condition)
             .orderBy(follow.id.desc())
             .limit(limit.toLong())
@@ -33,14 +32,13 @@ class FollowPagingRepositoryImpl(
     override fun findFollowersByToId(profileId: UUID, limit: Int, cursor: UUID?): List<Follow> {
         val follow = QFollow.follow
 
-        var condition = follow.to.id.eq(profileId)
+        val isFollowerProfile = follow.toId.eq(profileId)
 
-        if (cursor != null) {
-            condition = condition.and(follow.id.lt(cursor))
-        }
+        val condition = cursor?.let {
+            isFollowerProfile.and(follow.id.lt(it))
+        } ?: isFollowerProfile
 
         return queryFactory.selectFrom(follow)
-            .join(follow.from).fetchJoin()
             .where(condition)
             .orderBy(follow.id.desc())
             .limit(limit.toLong())

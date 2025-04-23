@@ -1,13 +1,13 @@
 package com.storead.profile.domain
 
-import com.storead.auth.domain.PlatformType
-import com.storead.auth.domain.User
+import com.github.f4b6a3.ulid.UlidCreator
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.*
 
 
 @SpringBootTest
@@ -17,15 +17,15 @@ class ProfileRepositoryTest(
     @Autowired private val profileRepository: ProfileRepository,
 ) : BehaviorSpec({
 
-    lateinit var user: User
+    lateinit var userId: UUID
 
     beforeSpec {
-        user = User(email = "test@test.com", name = "test", platformId = "1", platform = PlatformType.KAKAO)
+        userId = UlidCreator.getMonotonicUlid().toUuid()
         val profileImage = ProfileImage(url = "test")
 
         profileRepository.save(
             Profile(
-                profileName = "test", user = user, image = profileImage
+                profileName = "test", image = profileImage, userId = userId
             )
         )
     }
@@ -37,7 +37,7 @@ class ProfileRepositoryTest(
 
     given("유저의 프로필 조회") {
         `when`("유저 고유 아이디를 입력하면") {
-            val profile = profileRepository.findByUserId(user.id!!)!!
+            val profile = profileRepository.findByUserId(userId)!!
             then("해당 유저의 프로필을 반환한다") {
                 profile.profileName shouldBe "test"
             }

@@ -10,7 +10,7 @@ import java.util.*
 class Article(
 
     @Column(name = "author_id", nullable = false)
-    val authorID: UUID,
+    val authorId: UUID,
 
     @Column(nullable = false, length = 50)
     var title: String,
@@ -25,10 +25,10 @@ class Article(
     var publishStatus: ArticlePublishStatus = ArticlePublishStatus.CREATED,
 
     @Column(name = "book_id")
-    val bookID: UUID? = null,
+    val bookId: UUID? = null,
 
     @Column(name = "thumbnail_image_id")
-    var thumbnailImageID: UUID? = null,
+    var thumbnailImageId: UUID? = null,
 
     ) : BaseEntity() {
 

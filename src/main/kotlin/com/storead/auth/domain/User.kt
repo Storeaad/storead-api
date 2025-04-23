@@ -37,7 +37,7 @@ class User(
     fun toProfile(): Profile {
         return Profile(
             profileName = this.name,
-            user = this
+            userId = this.id
         )
     }
 }

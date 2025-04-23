@@ -1,9 +1,9 @@
 package com.storead.profile.domain
 
-import com.storead.auth.domain.User
 import com.storead.common.domain.BaseEntity
 import com.storead.profile.application.request.ProfileServiceUpdateRequest
 import jakarta.persistence.*
+import java.util.*
 
 @Entity
 @Table(name = "profiles")
@@ -15,13 +15,12 @@ class Profile(
     @Column(name = "profile_name")
     var profileName: String,
 
+    @Column(name = "user_id")
+    val userId: UUID,
+
     @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
     @JoinColumn(name = "profile_image_id")
     var image: ProfileImage? = null,
-
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    val user: User? = null,
 
     ) : BaseEntity() {
 

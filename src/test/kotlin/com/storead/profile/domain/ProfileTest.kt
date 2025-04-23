@@ -44,7 +44,7 @@ class ProfileTest(
         val profile = Profile(
             profileName = "test",
             image = ProfileImage(url = "testProfileImage"),
-            user = user,
+            userId = UlidCreator.getMonotonicUlid().toUuid(),
         )
         val userId = UlidCreator.getMonotonicUlid().toUuid()
 
