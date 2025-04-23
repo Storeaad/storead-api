@@ -1,5 +1,6 @@
 package com.storead.profile.domain
 
+import com.github.f4b6a3.ulid.UlidCreator
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
@@ -35,8 +36,16 @@ class FollowRepositoryTest(
 
 
     given("1번 유저가 2번 유저를 팔로우 하고 있는 경우") {
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
+        val testProfile1 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile2 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
 
         val followFromTo = Follow(
             fromId = testProfile1.id,
@@ -55,9 +64,21 @@ class FollowRepositoryTest(
     given("2명의 사용자가 1번 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
+        val testProfile1 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile2 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile3 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test3", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
 
         followRepository.save(
             Follow(
@@ -83,10 +104,26 @@ class FollowRepositoryTest(
     given("3명의 사용자가 1번 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
-        val testProfile4 = profileRepository.saveAndFlush(Profile(profileName = "test4"))
+        val testProfile1 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile2 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile3 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test3", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile4 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test4", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
 
         followRepository.save(
             Follow(
@@ -118,9 +155,19 @@ class FollowRepositoryTest(
     given("1번 유저가 2명의 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
+        val testProfile1 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile2 = profileRepository.saveAndFlush(
+            Profile(
+                profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid()
+            )
+        )
+        val testProfile3 = profileRepository.saveAndFlush(
+            Profile(profileName = "test3", userId = UlidCreator.getMonotonicUlid().toUuid())
+        )
 
         followRepository.save(
             Follow(
@@ -146,10 +193,34 @@ class FollowRepositoryTest(
     given("1번 유저가 3명의 유저를 팔로우 하고 있고, 조회 제한이 2로 설정된 경우") {
         val limit = 2
 
-        val testProfile1 = profileRepository.saveAndFlush(Profile(profileName = "test1"))
-        val testProfile2 = profileRepository.saveAndFlush(Profile(profileName = "test2"))
-        val testProfile3 = profileRepository.saveAndFlush(Profile(profileName = "test3"))
-        val testProfile4 = profileRepository.saveAndFlush(Profile(profileName = "test4"))
+        val testProfile1 =
+            profileRepository.saveAndFlush(
+                Profile(
+                    profileName = "test1",
+                    userId = UlidCreator.getMonotonicUlid().toUuid()
+                )
+            )
+        val testProfile2 =
+            profileRepository.saveAndFlush(
+                Profile(
+                    profileName = "test2",
+                    userId = UlidCreator.getMonotonicUlid().toUuid()
+                )
+            )
+        val testProfile3 =
+            profileRepository.saveAndFlush(
+                Profile(
+                    profileName = "test3",
+                    userId = UlidCreator.getMonotonicUlid().toUuid()
+                )
+            )
+        val testProfile4 =
+            profileRepository.saveAndFlush(
+                Profile(
+                    profileName = "test4",
+                    userId = UlidCreator.getMonotonicUlid().toUuid()
+                )
+            )
 
         followRepository.save(
             Follow(

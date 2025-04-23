@@ -1,8 +1,6 @@
 package com.storead.profile.application
 
 import com.github.f4b6a3.ulid.UlidCreator
-import com.storead.auth.domain.PlatformType
-import com.storead.auth.domain.User
 import com.storead.profile.application.request.FollowRelationshipServiceRequest
 import com.storead.profile.application.request.FollowServiceRequest
 import com.storead.profile.domain.FollowRepository
@@ -48,30 +46,28 @@ class FollowServiceTest(
         testProfile1 = profileRepository.save(
             Profile(
                 profileName = "test1",
-                user = User("1", name = "test1", platform = PlatformType.KAKAO)
+                userId = UlidCreator.getMonotonicUlid().toUuid()
             )
         )
         testProfile2 = profileRepository.save(
             Profile(
                 profileName = "test2",
-                user = User("2", name = "test2", platform = PlatformType.KAKAO)
+                userId = UlidCreator.getMonotonicUlid().toUuid()
             )
         )
         testProfile3 = profileRepository.save(
             Profile(
                 profileName = "test3",
-                user = User("3", name = "test3", platform = PlatformType.KAKAO)
+                userId = UlidCreator.getMonotonicUlid().toUuid()
             )
         )
 
         testProfile4 = profileRepository.save(
             Profile(
                 profileName = "test4",
-                user = User("4", name = "test4", platform = PlatformType.KAKAO)
+                userId = UlidCreator.getMonotonicUlid().toUuid()
             )
         )
-
-
     }
 
     afterSpec {

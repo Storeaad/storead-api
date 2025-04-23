@@ -1,7 +1,6 @@
 package com.storead.profile.domain
 
-import com.storead.auth.domain.PlatformType
-import com.storead.auth.domain.User
+import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.profile.application.response.FollowRelationshipResponse
 import com.storead.profile.web.request.FollowingRequest
 import io.kotest.core.annotation.DisplayName
@@ -24,10 +23,11 @@ class RelationshipTest(
     }
 
     given("1번 유저가 2번 유저를 팔로잉 중인 경우") {
+
         val testProfile1 =
-            Profile(profileName = "test1", user = User("1", name = "test1", platform = PlatformType.KAKAO))
+            Profile(profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid())
         val testProfile2 =
-            Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
+            Profile(profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid())
 
         val followFromTo = Follow(
             fromId = testProfile1.id,
@@ -47,9 +47,9 @@ class RelationshipTest(
 
     given("2번 유저가 1번 유저를 팔로잉 중인 경우") {
         val testProfile1 =
-            Profile(profileName = "test1", user = User("1", name = "test1", platform = PlatformType.KAKAO))
+            Profile(profileName = "test1", userId = UlidCreator.getMonotonicUlid().toUuid())
         val testProfile2 =
-            Profile(profileName = "test2", user = User("1", name = "test2", platform = PlatformType.KAKAO))
+            Profile(profileName = "test2", userId = UlidCreator.getMonotonicUlid().toUuid())
 
         val followFromTo = Follow(
             fromId = testProfile2.id,
