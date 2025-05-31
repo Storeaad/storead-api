@@ -32,6 +32,16 @@ class Article(
 
     ) : BaseEntity() {
 
+    fun update(title: String? = null, description: String? = null, body: String? = null) {
+        title?.let { this.title = it }
+        description?.let { this.description = it }
+        body?.let { this.body = it }
+    }
+
+    fun doesNotOwner(userId: UUID): Boolean {
+        return this.authorId != userId
+    }
+
     fun publish() {
         this.publishStatus = ArticlePublishStatus.PUBLISHED
     }
