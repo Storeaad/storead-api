@@ -1,5 +1,6 @@
 package com.storead.config.data
 
+import com.querydsl.jpa.JPQLTemplates
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
@@ -14,6 +15,11 @@ class QueryDslConfig {
 
     @Bean
     fun jpaQueryFactory(): JPAQueryFactory {
-        return JPAQueryFactory(entityManager)
+
+        /**
+         * https://github.com/querydsl/querydsl/issues/3428
+         *  Hibernate 6.x 버전부터 groupby + transfrom query는 DefaultQueryHandler 를 사용해야함
+         */
+        return JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager)
     }
 }
