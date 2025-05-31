@@ -15,9 +15,10 @@ class RedisConfig(
 
     @Bean
     fun redisConnectionFactory(): RedisConnectionFactory {
-        val redisStandConfig = RedisStandaloneConfiguration(redisProperties.host, redisProperties.port)
-        redisStandConfig.username = redisProperties.username
-        redisStandConfig.setPassword(redisProperties.password)
+        val redisStandConfig = RedisStandaloneConfiguration(redisProperties.host, redisProperties.port).apply {
+            setPassword(redisProperties.password)
+            username = redisProperties.username
+        }
 
         return LettuceConnectionFactory(redisStandConfig)
     }
