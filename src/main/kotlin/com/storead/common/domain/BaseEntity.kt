@@ -21,7 +21,7 @@ abstract class BaseEntity {
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 
     @CreatedDate
-    private var createdAt: LocalDateTime? = null
+    var createdAt: LocalDateTime? = null
 
     @LastModifiedDate
     private var lastModifiedAt: LocalDateTime? = null
