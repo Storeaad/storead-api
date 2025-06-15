@@ -1,6 +1,5 @@
 package com.storead.article.domain
 
-import com.github.f4b6a3.ulid.Ulid
 import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.profile.domain.Profile
 import com.storead.profile.domain.ProfileRepository
@@ -64,7 +63,7 @@ class ArticleRepositoryTest(
 
     given("게시글이 한 개만 등록되어 있을 때 연관된 정보도 함께 접근하는 경우") {
         val givenArticle = Article(
-            authorId = profile.id,
+            authorProfileId = profile.id,
             title = "title",
             body = "body",
             description = "description",

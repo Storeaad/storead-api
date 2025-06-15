@@ -10,7 +10,7 @@ import java.util.*
 class Article(
 
     @Column(name = "author_id", nullable = false)
-    val authorId: UUID,
+    val authorProfileId: UUID,
 
     @Column(nullable = false, length = 50)
     var title: String,
@@ -39,7 +39,7 @@ class Article(
     }
 
     fun doesNotOwner(userId: UUID): Boolean {
-        return this.authorId != userId
+        return this.authorProfileId != userId
     }
 
     fun publish() {

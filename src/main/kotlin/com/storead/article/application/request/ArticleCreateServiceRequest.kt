@@ -18,7 +18,7 @@ data class ArticleCreateServiceRequest(
 ) {
     fun toEntity(bookId: UUID? = null, thumbnailImageId: UUID? = null): Article {
         return Article(
-            authorId = userId,
+            authorProfileId = userId,
             title = title,
             description = description,
             body = body,

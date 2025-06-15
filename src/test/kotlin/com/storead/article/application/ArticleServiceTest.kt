@@ -140,7 +140,7 @@ class ArticleServiceTest(
         val articlesView = mutableListOf<ArticleView>()
         val articles = (1..6).map {
             Article(
-                authorId = testProfile.id,
+                authorProfileId = testProfile.id,
                 title = "testArticle$it",
                 description = "desc$it",
                 body = "body$it",

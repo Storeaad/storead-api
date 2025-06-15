@@ -31,7 +31,7 @@ class TagServiceTest(
     beforeSpec {
         article = articleRepository.saveAndFlush(
             Article(
-                authorId = UlidCreator.getMonotonicUlid().toUuid(),
+                authorProfileId = UlidCreator.getMonotonicUlid().toUuid(),
                 title = "test",
                 description = "test",
                 body = "test",
