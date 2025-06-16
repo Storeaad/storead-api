@@ -49,7 +49,7 @@ class ArticleJoinRepositoryImpl(
 
         val isAuthorPublished = article.publishStatus
             .eq(ArticlePublishStatus.PUBLISHED)
-            .and(article.authorId.eq(authorId))
+            .and(article.authorProfileId.eq(authorId))
 
         val condition = cursor?.let {
             isAuthorPublished.and(article.id.lt(it))
@@ -81,7 +81,7 @@ class ArticleJoinRepositoryImpl(
         )
         .from(article)
         .leftJoin(profile)
-        .on(article.authorId.eq(profile.id))
+        .on(article.authorProfileId.eq(profile.id))
         .leftJoin(articleTag)
         .on(article.id.eq(articleTag.articleId))
         .leftJoin(tag)
