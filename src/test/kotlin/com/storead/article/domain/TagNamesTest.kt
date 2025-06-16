@@ -31,5 +31,15 @@ class TagNamesTest : BehaviorSpec({
             }
         }
 
+        `when`("공백이 포함된 태그를 정규화 하면") {
+            val duplicateTagNames = TagNames(listOf("spring", "kotlin", "", " "))
+            val tags = duplicateTagNames.toTags()
+
+            then("공백은 제거 된 태그만 반환 되어야한다") {
+                tags.asList().size shouldBe 2
+                tags.names() shouldContainExactlyInAnyOrder listOf("spring", "kotlin")
+            }
+        }
+
     }
 })

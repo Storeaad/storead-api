@@ -10,5 +10,8 @@ data class TagNames(
         return Tags(normalized.map { Tag(it) })
     }
 
-    private fun normalize(): List<String> = tags.map { it.trim().lowercase() }.distinct()
+    private fun normalize(): List<String> = tags
+        .map { it.trim().lowercase() }
+        .filter { it.isNotBlank() }
+        .distinct()
 }
