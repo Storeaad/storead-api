@@ -17,13 +17,11 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
 
 
 @SpringBootTest
 @ActiveProfiles("test")
 @DisplayName("게시글 서비스 테스트")
-@Transactional
 class ArticleServiceTest(
     @Autowired private val articleService: ArticleService,
     @Autowired private val articleRepository: ArticleRepository,
@@ -37,16 +35,19 @@ class ArticleServiceTest(
 
     beforeSpec {
         val userId = UlidCreator.getMonotonicUlid().toUuid()
-        testProfile = profileRepository.saveAndFlush(Profile(userId = userId, profileName = "testProfile"))
+        testProfile = profileRepository.save(Profile(userId = userId, profileName = "testProfile"))
+    }
+
+    afterTest {
+        articleRepository.deleteAllInBatch()
     }
 
     afterSpec {
-        articleRepository.deleteAll()
-        profileRepository.deleteAll()
-        articleViewRepository.deleteAll()
+        profileRepository.deleteAllInBatch()
+        articleViewRepository.deleteAllInBatch()
     }
 
-    given("인증된 사용자가 게시글을 관리하는 경우") {
+    given("인증된 사용자가 게시글을 등록하기 위해 요청한 정보가 정상적으로 전달 되었을 때") {
         val request = ArticleCreateServiceRequest(
             userId = testProfile.id,
             title = "testArticle",
@@ -55,15 +56,27 @@ class ArticleServiceTest(
             tags = TagNames(listOf("python")),
         )
 
-        `when`("사용자가 게시글을 작성하면") {
-            articleService.createArticle(request)
+        `when`("신규 게시글을 등록하면") {
+            val articleResponse = articleService.createArticle(request)
 
-            then("해당 정보로 새 게시글이 생성되어야 한다") {
+            then("해당 정보로 새 게시글과 기본 조회수가 생성되어야 한다") {
                 articleRepository.findByTitle(request.title)?.title shouldBe "testArticle"
+                articleViewRepository.findByArticleId(articleResponse.articleId)?.count shouldBe 0
             }
         }
+    }
 
-        `when`("사용자가 게시글을 수정하면") {
+    given("인증된 사용자가 게시글을 수정하기 위해 요청한 정보가 정상적으로 전달 되었을 때") {
+        val request = ArticleCreateServiceRequest(
+            userId = testProfile.id,
+            title = "testArticle",
+            description = "testDescription",
+            body = "testBody",
+            tags = TagNames(listOf("python")),
+        )
+        articleRepository.save(request.toEntity())
+
+        `when`("등록 되어있는 자신의 게시글 제목을 수정하면") {
             val article = articleRepository.findByTitle(request.title)!!
             val updateRequest = ArticleUpdateServiceRequest(article.id, request.userId, title = "testArticleUpdated")
             articleService.updateArticle(updateRequest)
@@ -73,8 +86,19 @@ class ArticleServiceTest(
                 articleRepository.findByTitle("testArticleUpdated")?.title shouldBe "testArticleUpdated"
             }
         }
+    }
 
-        `when`("사용자가 게시글을 삭제하면") {
+    given("인증된 사용자가 게시글을 삭제하기 위해 요청한 정보가 정상적으로 전달 되었을 때") {
+        val request = ArticleCreateServiceRequest(
+            userId = testProfile.id,
+            title = "testArticleUpdated",
+            description = "testDescription",
+            body = "testBody",
+            tags = TagNames(listOf("python")),
+        )
+        articleRepository.save(request.toEntity())
+
+        `when`("등록 되어있는 자신의 게시글을 삭제하면") {
             val article = articleRepository.findByTitle("testArticleUpdated")!!
             articleService.deleteArticle(ArticleDeleteServiceRequest(article.id, request.userId))
 
@@ -88,7 +112,7 @@ class ArticleServiceTest(
     }
 
     given("게시글을 작성하지 않은 유저가 있을 때") {
-        val article = articleRepository.saveAndFlush(
+        val article = articleRepository.save(
             Article(testProfile.id, "testArticle", "desc", "body", ArticlePublishStatus.PUBLISHED)
         )
         val request = ArticlesPageServiceRequest(authorId = UlidCreator.getMonotonicUlid().toUuid())
@@ -102,6 +126,10 @@ class ArticleServiceTest(
         }
 
         `when`("게시글을 수정할 수 없는 유저가 수정 요청을 보내면") {
+            val article = articleRepository.save(
+                Article(testProfile.id, "testArticle", "desc", "body", ArticlePublishStatus.PUBLISHED)
+            )
+
             val request = ArticleUpdateServiceRequest(article.id, UlidCreator.getMonotonicUlid().toUuid())
             val exception = shouldThrow<ArticleException> { articleService.updateArticle(request) }
 
@@ -109,11 +137,10 @@ class ArticleServiceTest(
                 exception.message shouldBe "해당 게시글의 작성자가 아닙니다."
             }
         }
-
     }
 
     given("게시글을 작성한 사용자가 있을 때") {
-        articleRepository.saveAndFlush(
+        articleRepository.save(
             Article(testProfile.id, "testArticle", "desc", "body", ArticlePublishStatus.PUBLISHED)
         )
 
@@ -136,7 +163,7 @@ class ArticleServiceTest(
         }
     }
 
-    given("여러 개의 게시글이 게시된 상태에서") {
+    given("여러 개의 게시글이 게시된 상태에서 특정 게시글만 조회 하는 경우") {
         val articlesView = mutableListOf<ArticleView>()
         val articles = (1..6).map {
             Article(
@@ -147,11 +174,11 @@ class ArticleServiceTest(
                 publishStatus = ArticlePublishStatus.PUBLISHED
             )
         }.also {
-            articleRepository.saveAllAndFlush(it)
+            articleRepository.saveAll(it)
         }
 
         articles.map { articlesView.add(ArticleView(it.id)) }
-            .also { articleViewRepository.saveAllAndFlush(articlesView) }
+            .also { articleViewRepository.saveAll(articlesView) }
 
         `when`("특정 게시글을 상세 조회 하면") {
             val request = ArticleDetailServiceRequest(articles.first().id)
@@ -166,6 +193,25 @@ class ArticleServiceTest(
                 }
             }
         }
+    }
+
+    given("여러 개의 게시글이 게시된 상태에서 최신 5개의 게시글만 조회 하는 경우") {
+        val articlesView = mutableListOf<ArticleView>()
+        val articles = (1..6).map {
+            Article(
+                authorProfileId = testProfile.id,
+                title = "testArticle$it",
+                description = "desc$it",
+                body = "body$it",
+                publishStatus = ArticlePublishStatus.PUBLISHED
+            )
+        }.also {
+            articleRepository.saveAll(it)
+        }
+
+        articles.map { articlesView.add(ArticleView(it.id)) }
+            .also { articleViewRepository.saveAll(articlesView) }
+
 
         `when`("등록 되어 있는 게시글의 최신 5개만 조회 하면") {
             val request = ArticlesPageServiceRequest(limit = 5)
@@ -183,6 +229,25 @@ class ArticleServiceTest(
                 )
             }
         }
+    }
+
+    given("여러 개의 게시글이 게시된 상태에서 커서를 이용하여 다음 페이지의 게시글을 조회 하는 경우") {
+        val articlesView = mutableListOf<ArticleView>()
+        val articles = (1..6).map {
+            Article(
+                authorProfileId = testProfile.id,
+                title = "testArticle$it",
+                description = "desc$it",
+                body = "body$it",
+                publishStatus = ArticlePublishStatus.PUBLISHED
+            )
+        }.also {
+            articleRepository.saveAll(it)
+        }
+
+        articles.map { articlesView.add(ArticleView(it.id)) }
+            .also { articleViewRepository.saveAll(articlesView) }
+
 
         `when`("등록 되어 있는 게시글에서 커서를 이용하여 다음 게시글을 검색하면") {
 
