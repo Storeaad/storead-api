@@ -11,6 +11,7 @@ import com.storead.article.signal.ArticleRetrieveEvent
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.event.TransactionalEventListener
 
 
 @Service
@@ -20,7 +21,7 @@ class ArticleViewService(
 ) {
 
     @Async
-    @EventListener
+    @TransactionalEventListener
     fun articleViewCreate(event: ArticleCreateEvent) {
         articleViewRepository.save(ArticleView(event.articleId))
     }
