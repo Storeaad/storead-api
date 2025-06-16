@@ -10,7 +10,7 @@ import java.util.*
 class Article(
 
     @Column(name = "author_id", nullable = false)
-    val authorId: UUID,
+    val authorProfileId: UUID,
 
     @Column(nullable = false, length = 50)
     var title: String,
@@ -31,6 +31,16 @@ class Article(
     var thumbnailImageId: UUID? = null,
 
     ) : BaseEntity() {
+
+    fun update(title: String? = null, description: String? = null, body: String? = null) {
+        title?.let { this.title = it }
+        description?.let { this.description = it }
+        body?.let { this.body = it }
+    }
+
+    fun doesNotOwner(userId: UUID): Boolean {
+        return this.authorProfileId != userId
+    }
 
     fun publish() {
         this.publishStatus = ArticlePublishStatus.PUBLISHED

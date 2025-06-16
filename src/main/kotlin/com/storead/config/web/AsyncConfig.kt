@@ -5,8 +5,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.core.task.TaskDecorator
 import org.springframework.scheduling.annotation.AsyncConfigurer
 import org.springframework.scheduling.annotation.EnableAsync
-import java.util.concurrent.Executor
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
+import java.util.concurrent.Executor
 
 
 @Configuration
@@ -14,10 +14,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 class AsyncConfig() : AsyncConfigurer {
 
     override fun getAsyncExecutor(): Executor {
-        val executor = ThreadPoolTaskExecutor()
-        executor.setTaskDecorator(MDCCopyTaskDecorator())
-        executor.initialize()
-        return executor
+        return ThreadPoolTaskExecutor().apply {
+            setTaskDecorator(MDCCopyTaskDecorator())
+            initialize()
+        }
     }
 }
 

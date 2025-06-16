@@ -9,9 +9,7 @@ import jakarta.persistence.Table
 @Table(name = "article_thumbnails")
 class ArticleThumbnailImage(
 
-    val thumbnailUrl: String,
+    var thumbnailUrl: String,
 
     ) : BaseEntity() {
-
-
 }
