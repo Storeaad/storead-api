@@ -26,6 +26,6 @@ class ProfileArgumentResolver(
         binderFactory: WebDataBinderFactory?
     ): Any? {
         val user = SecurityContextHolder.getContext().authentication.principal as User
-        return profileService.getProfileByUserId(user.id!!).id
+        return profileService.getProfileByUserId(user.id).id
     }
 }
