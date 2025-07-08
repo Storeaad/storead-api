@@ -1,6 +1,9 @@
 package com.storead.article.application.request
 
-import java.util.UUID
+import com.storead.article.domain.ArticlePublishStatus
+import com.storead.article.domain.TagNames
+import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 data class ArticleUpdateServiceRequest(
     val articleId: UUID,
@@ -8,8 +11,8 @@ data class ArticleUpdateServiceRequest(
     val title: String? = null,
     val body: String? = null,
     val description: String? = null,
-    val publishStatus: String? = null,
-
-//    val imageUrls: List<String>? = null,
-    // TODO: Add tags
+    val publishStatus: ArticlePublishStatus? = null,
+    val tagNames: TagNames? = null,
+    val bookId: UUID? = null,
+    val thumbnailImageFile: MultipartFile? = null,
 )

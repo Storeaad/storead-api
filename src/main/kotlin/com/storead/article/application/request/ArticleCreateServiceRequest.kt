@@ -16,7 +16,7 @@ data class ArticleCreateServiceRequest(
     val bookId: UUID? = null,
     val thumbnailImageFile: MultipartFile? = null,
 ) {
-    fun toEntity(bookId: UUID? = null, thumbnailImageId: UUID? = null): Article {
+    fun toEntity(thumbnailImageId: UUID? = null): Article {
         return Article(
             authorProfileId = userId,
             title = title,
