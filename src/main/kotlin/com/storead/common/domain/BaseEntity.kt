@@ -24,5 +24,5 @@ abstract class BaseEntity {
     var createdAt: LocalDateTime? = null
 
     @LastModifiedDate
-    private var lastModifiedAt: LocalDateTime? = null
+    var lastModifiedAt: LocalDateTime? = null
 }
