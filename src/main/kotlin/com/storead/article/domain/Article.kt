@@ -25,32 +25,45 @@ class Article(
     var publishStatus: ArticlePublishStatus = ArticlePublishStatus.CREATED,
 
     @Column(name = "book_id")
-    val bookId: UUID? = null,
+    var bookId: UUID? = null,
 
     @Column(name = "thumbnail_image_id")
     var thumbnailImageId: UUID? = null,
 
     ) : BaseEntity() {
 
-    fun update(title: String? = null, description: String? = null, body: String? = null) {
+    fun update(
+        title: String? = null,
+        description: String? = null,
+        body: String? = null,
+        publishStatus: ArticlePublishStatus? = null,
+        bookId: UUID? = null,
+        thumbnailImageId: UUID? = null
+    ) {
         title?.let { this.title = it }
         description?.let { this.description = it }
         body?.let { this.body = it }
+        publishStatus?.let { this.publishStatus = it }
+        bookId?.let { this.bookId = it }
+        thumbnailImageId?.let { this.thumbnailImageId = it }
     }
 
     fun doesNotOwner(userId: UUID): Boolean {
         return this.authorProfileId != userId
     }
 
-    fun publish() {
+    fun publish(): Article {
         this.publishStatus = ArticlePublishStatus.PUBLISHED
+        return this
     }
 
-    fun draft() {
+    fun draft(): Article {
         this.publishStatus = ArticlePublishStatus.DRAFT
+        return this
     }
 
-    fun delete() {
+    fun delete(): Article {
         this.publishStatus = ArticlePublishStatus.DELETED
+        return this
     }
 }
