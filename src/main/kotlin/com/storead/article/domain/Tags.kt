@@ -4,7 +4,7 @@ import java.util.*
 
 
 data class Tags(
-    private val tags: List<Tag>
+    val tags: List<Tag>
 ) {
 
     fun createNewTagsFrom(anotherTags: Tags): Tags {

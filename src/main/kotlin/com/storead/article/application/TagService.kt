@@ -23,6 +23,15 @@ class TagService(
         return existsTags.extend(newTagsFromUserInput)
     }
 
+    fun updateTags(tagNames: TagNames?, articleId: UUID): Tags? {
+        if (tagNames == null) return null
+
+        val tags = addAll(tagNames)
+        tagMappingWithArticle(tags, articleId)
+
+        return tags
+    }
+
     fun tagMappingWithArticle(tags: Tags, articleId: UUID) = articleTagRepository.saveAll(tags.toArticleTags(articleId))
 
     private fun findExistsTags(tags: Tags): Tags = Tags(tagRepository.findByNameIn(tags.names()))
