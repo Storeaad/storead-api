@@ -1,4 +1,4 @@
-package com.storead.config.security.jwt.exceptions
+package com.storead.config.security.exceptions
 
 import com.storead.common.exception.APIException
 import org.springframework.http.HttpStatus

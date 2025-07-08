@@ -62,16 +62,24 @@ spring:
       on-profile: local
 
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create
+
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
+        highlight_sql: true
 
   h2:
     console:
     enabled: true
+
+  sql:
+    init:
+      mode: always
 
 
 ---
@@ -88,6 +96,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  sql:
+    init:
+      mode: never
 
   security:
     jwt:

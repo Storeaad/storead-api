@@ -4,13 +4,15 @@ import com.storead.auth.application.AuthService
 import com.storead.auth.application.TokenService
 import com.storead.auth.domain.User
 import com.storead.common.constants.Headers
-import com.storead.config.security.jwt.exceptions.JwtAuthenticationException
+import com.storead.config.security.endpoint.ApiAllowEndpoints
+import com.storead.config.security.exceptions.JwtAuthenticationException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 import org.springframework.web.servlet.HandlerExceptionResolver
 import java.util.*
@@ -18,14 +20,10 @@ import java.util.*
 class JwtAuthenticationFilter(
     private val tokenService: TokenService,
     private val authService: AuthService,
-    private val handlerExceptionResolver: HandlerExceptionResolver
+    private val handlerExceptionResolver: HandlerExceptionResolver,
+    private val permitAllMatchers: List<RequestMatcher>,
+    private val allowEndpoints: ApiAllowEndpoints,
 ) : OncePerRequestFilter() {
-
-    private val ALLOW_ALL_URL: List<String> = listOf(
-        "/api/v1/auth",
-        "/h2-console",
-        "/favicon.ico",
-    )
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -33,13 +31,13 @@ class JwtAuthenticationFilter(
         filterChain: FilterChain
     ) {
         try {
-            if (ALLOW_ALL_URL.any { request.requestURI.startsWith(it) }) {
+
+            if (isPermitAllRequest(request) || doesNotAllowEndpoint(request)) {
                 filterChain.doFilter(request, response)
                 return
             }
 
-            val accessToken: String = resolveToken(request)
-                ?: throw JwtAuthenticationException("액세스 토큰을 찾을 수 없습니다.")
+            val accessToken: String = resolveToken(request) ?: throw JwtAuthenticationException("액세스 토큰을 찾을 수 없습니다.")
 
             if (tokenService.validate(accessToken)) {
                 val memberId: UUID = tokenService.getSubject(accessToken)
@@ -66,5 +64,13 @@ class JwtAuthenticationFilter(
                 it.removePrefix(Headers.BEARER_NEXT_SPACE)
             } else null
         }
+    }
+
+    private fun doesNotAllowEndpoint(request: HttpServletRequest): Boolean {
+        return !allowEndpoints.matches(request)
+    }
+
+    private fun isPermitAllRequest(request: HttpServletRequest): Boolean {
+        return permitAllMatchers.any { it.matches(request) }
     }
 }

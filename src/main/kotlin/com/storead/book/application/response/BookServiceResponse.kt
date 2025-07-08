@@ -8,7 +8,7 @@ import java.util.UUID
 data class BookServiceResponse(
     private val book: Book,
 ) {
-    val bookUuid: UUID = book.id!!
+    val bookUuid: UUID = book.id
     val isbn: String = book.isbn
     val title: String = book.title
     val author: String = book.author

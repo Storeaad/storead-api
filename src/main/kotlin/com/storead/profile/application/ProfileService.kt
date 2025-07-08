@@ -1,7 +1,8 @@
 package com.storead.profile.application
 
 import com.storead.auth.signal.UserCreateEvent
-import com.storead.common.storage.ImageFileHandler
+import com.storead.common.storage.LocalImageFileHandler
+import com.storead.common.storage.UploadFile
 import com.storead.profile.application.request.ProfileServiceUpdateRequest
 import com.storead.profile.application.response.ProfileServiceResponse
 import com.storead.profile.domain.Profile
@@ -18,7 +19,7 @@ import kotlin.jvm.optionals.getOrNull
 class ProfileService(
     private val profileRepository: ProfileRepository,
     private val profileImageRepository: ProfileImageRepository,
-    private val imageFileHandler: ImageFileHandler
+    private val imageFileHandler: LocalImageFileHandler
 ) {
     @EventListener
     fun userCreateEventListen(event: UserCreateEvent) {
@@ -49,8 +50,12 @@ class ProfileService(
             val currentImage = profileImageRepository.findById(currentImageId)
                 .getOrNull() ?: throw ProfileException("프로필 이미지를 찾을 수 없습니다.")
 
+            val uploadFile = UploadFile(it)
             profileImageRepository.save(
-                currentImage.update(imageFileHandler.validate(it).saveImage(it).uri)
+                currentImage.update(
+                    imageFileHandler
+                        .validate(uploadFile)
+                        .saveImage(uploadFile).uri)
             )
         }
 

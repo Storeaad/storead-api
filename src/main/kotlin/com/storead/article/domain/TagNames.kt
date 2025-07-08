@@ -1,8 +1,19 @@
 package com.storead.article.domain
 
 data class TagNames(
-    private val tags: List<String>
+    val tags: List<String>
 ) {
+    companion object {
+
+        fun from(stringTagNames: List<String>?): TagNames {
+            if (stringTagNames.isNullOrEmpty()) {
+                return TagNames(emptyList())
+            }
+
+            return TagNames(stringTagNames)
+        }
+    }
+
 
     fun toTags(): Tags {
         val normalized: List<String> = normalize()

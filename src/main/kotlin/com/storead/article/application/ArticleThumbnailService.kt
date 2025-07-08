@@ -21,6 +21,12 @@ class ArticleThumbnailService(
         return thumbnailRepository.save(
             ArticleThumbnailImage(storedFile.uri)
         )
+    }
 
+    fun update(thumbnailImage: MultipartFile?): ArticleThumbnailImage? {
+        thumbnailImage ?: return null
+
+        val storedFile = imageFileHandler.saveImage(UploadFile(thumbnailImage))
+        return thumbnailRepository.save(ArticleThumbnailImage(storedFile.uri))
     }
 }

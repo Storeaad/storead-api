@@ -3,8 +3,8 @@ package com.storead.article.application.response
 import com.storead.article.application.request.ArticlesPageServiceRequest
 import java.util.*
 
-data class ArticlePageResponse(
-    private val allArticles: List<ArticleDetailResponse>,
+data class ArticlePageServiceResponse(
+    private val allArticles: List<ArticleDetailServiceResponse>,
     private val articleRequest: ArticlesPageServiceRequest
 ) {
     private val requestSize = articleRequest.limit

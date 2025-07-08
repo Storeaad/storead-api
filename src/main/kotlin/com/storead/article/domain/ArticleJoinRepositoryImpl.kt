@@ -6,6 +6,7 @@ import com.querydsl.core.group.GroupBy.list
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.impl.JPAQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.storead.book.domain.QBook
 import com.storead.profile.domain.QProfile
 import org.springframework.stereotype.Repository
 import java.util.*
@@ -19,6 +20,7 @@ class ArticleJoinRepositoryImpl(
     private val articleTag = QArticleTag.articleTag
     private val tag = QTag.tag
     private val profile = QProfile.profile
+    private val book = QBook.book
 
     private val orderByCreatedDesc = article.createdAt.desc()
 
@@ -77,7 +79,7 @@ class ArticleJoinRepositoryImpl(
             article.id,
             article.title,
             article.description,
-            article.body
+            article.body,
         )
         .from(article)
         .leftJoin(profile)
@@ -86,6 +88,8 @@ class ArticleJoinRepositoryImpl(
         .on(article.id.eq(articleTag.articleId))
         .leftJoin(tag)
         .on(articleTag.tagId.eq(tag.id))
+        .leftJoin(book)
+        .on(article.bookId.eq(book.id))
 
 
     private fun toListQueryResult(query: JPAQuery<Tuple>): List<ArticleDetailJoinResult> = query
@@ -96,7 +100,17 @@ class ArticleJoinRepositoryImpl(
                     article,
                     profile.id,
                     profile.profileName,
-                    list(tag.name)
+                    list(tag.name),
+                    Projections.constructor(
+                        ArticleBookDetail::class.java,
+                        book.id,
+                        book.title,
+                        book.author,
+                        book.description,
+                        book.image,
+                        book.isbn,
+                        book.publishDate,
+                    )
                 )
             )
         )
@@ -109,7 +123,17 @@ class ArticleJoinRepositoryImpl(
                     article,
                     profile.id,
                     profile.profileName,
-                    list(tag.name)
+                    list(tag.name),
+                    Projections.constructor(
+                        ArticleBookDetail::class.java,
+                        book.id,
+                        book.title,
+                        book.author,
+                        book.description,
+                        book.image,
+                        book.isbn,
+                        book.publishDate,
+                    )
                 )
             )
         )[articleId]
