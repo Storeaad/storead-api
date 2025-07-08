@@ -1,18 +1,10 @@
 package com.storead.common.storage
 
-import org.springframework.web.multipart.MultipartFile
-
-
-data class File(
-    val uri: String,
-    val name: String
-)
-
 
 interface FileManager {
 
-    fun saveImage(file: MultipartFile): File
+    fun saveImage(file: UploadFile): StoredFile
 
-    fun validate(file: MultipartFile): FileManager
+    fun validate(file: UploadFile): FileManager
 
 }
