@@ -10,6 +10,7 @@ import com.storead.common.web.ApiResponse
 import com.storead.config.properties.CookieProperties
 import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 
 
@@ -21,6 +22,7 @@ class AuthController(
     private val clients: Clients
 ) {
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/{platform}")
     fun login(
         @RequestHeader("Authorization") token: String,
@@ -54,6 +56,7 @@ class AuthController(
     }
 
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/logout")
     fun logout(@RequestHeader("Authorization") token: String): ResponseEntity<ApiResponse<String>> {
         val cookies: List<ResponseCookie> = listOf(
