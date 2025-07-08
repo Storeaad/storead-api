@@ -7,13 +7,13 @@ import org.springframework.http.ResponseEntity
 
 
 data class ApiResponse<T>(
-    val data: T,
+    val data: T? = null,
     val message: String,
     val status: HttpStatus,
 ) {
     companion object {
 
-        fun <T> success(data: T, message: String? = null, status: HttpStatus = HttpStatus.OK): ResponseEntity<ApiResponse<T>> =
+        fun <T> success(data: T?, message: String? = null, status: HttpStatus = HttpStatus.OK): ResponseEntity<ApiResponse<T>> =
             ResponseEntity.status(status).body(ApiResponse(data, message ?: status.name, status))
 
         fun <T> success(
