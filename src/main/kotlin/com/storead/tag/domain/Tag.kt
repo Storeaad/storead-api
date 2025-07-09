@@ -1,4 +1,4 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
 import com.storead.common.domain.BaseEntity
 import jakarta.persistence.Column

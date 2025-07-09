@@ -1,4 +1,4 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
 import io.kotest.core.annotation.DisplayName

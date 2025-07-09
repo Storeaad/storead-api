@@ -1,5 +1,6 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
+import com.storead.article.domain.ArticleTag
 import java.util.*
 
 

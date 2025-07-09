@@ -1,11 +1,11 @@
-package com.storead.article.application
+package com.storead.tag.application
 
 import com.storead.article.domain.ArticleTagRepository
-import com.storead.article.domain.TagNames
-import com.storead.article.domain.TagRepository
-import com.storead.article.domain.Tags
+import com.storead.tag.domain.TagNames
+import com.storead.tag.domain.TagRepository
+import com.storead.tag.domain.Tags
 import org.springframework.stereotype.Service
-import java.util.*
+import java.util.UUID
 
 @Service
 class TagService(

@@ -1,4 +1,4 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec

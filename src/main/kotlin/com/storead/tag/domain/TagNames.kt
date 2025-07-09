@@ -1,4 +1,4 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
 data class TagNames(
     val tags: List<String>
