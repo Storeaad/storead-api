@@ -8,12 +8,12 @@ import com.storead.article.application.response.ArticleUpdateServiceResponse
 import com.storead.article.domain.Article
 import com.storead.article.domain.ArticleDetailJoinResult
 import com.storead.article.domain.ArticleRepository
-import com.storead.article.domain.Tags
 import com.storead.article.exception.ArticleError
 import com.storead.article.exception.ArticleException
 import com.storead.article.signal.ArticleCreateEvent
 import com.storead.article.signal.ArticleRetrieveEvent
-import com.storead.book.application.BookService
+import com.storead.tag.application.TagService
+import com.storead.tag.domain.Tags
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +23,6 @@ import java.util.*
 @Service
 class ArticleService(
     private val tagService: TagService,
-    private val bookService: BookService,
     private val articleRepository: ArticleRepository,
     private val thumbnailService: ArticleThumbnailService,
     private val eventPublisher: ApplicationEventPublisher,

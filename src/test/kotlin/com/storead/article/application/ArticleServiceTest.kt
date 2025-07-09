@@ -6,6 +6,7 @@ import com.storead.article.domain.*
 import com.storead.article.exception.ArticleException
 import com.storead.profile.domain.Profile
 import com.storead.profile.domain.ProfileRepository
+import com.storead.tag.domain.TagNames
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec

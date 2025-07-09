@@ -2,7 +2,7 @@ package com.storead.article.application.request
 
 import com.storead.article.domain.Article
 import com.storead.article.domain.ArticlePublishStatus
-import com.storead.article.domain.TagNames
+import com.storead.tag.domain.TagNames
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 

@@ -3,6 +3,8 @@ package com.storead.article.domain
 import com.github.f4b6a3.ulid.UlidCreator
 import com.storead.profile.domain.Profile
 import com.storead.profile.domain.ProfileRepository
+import com.storead.tag.domain.Tag
+import com.storead.tag.domain.TagRepository
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
