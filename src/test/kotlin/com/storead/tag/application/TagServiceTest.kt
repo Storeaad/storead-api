@@ -10,6 +10,8 @@ import com.storead.tag.domain.TagRepository
 import com.storead.tag.domain.Tags
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,21 +27,12 @@ class TagServiceTest(
     @Autowired private val articleTagRepository: ArticleTagRepository,
 ) : BehaviorSpec({
 
-    lateinit var article: Article
-
-    beforeSpec {
-        article = articleRepository.saveAndFlush(
-            Article(
-                authorProfileId = UlidCreator.getMonotonicUlid().toUuid(),
-                title = "test",
-                description = "test",
-                body = "test",
-            )
-        )
+    beforeContainer {
+        tagRepository.deleteAll()
     }
 
     afterSpec {
-        articleRepository.deleteAll()
+        articleTagRepository.deleteAll()
         tagRepository.deleteAll()
     }
 
@@ -47,35 +40,66 @@ class TagServiceTest(
         val tagNames = TagNames(listOf("kotlin", "spring"))
 
         `when`("사용자가 입력한 태그를 생성하면") {
-            tagService.addAll(tagNames)
+            tagService.saveTags(tagNames)
 
             then("태그가 모두 저장되어야한다") {
                 val response = tagRepository.findAll()
                 response.size shouldBe 2
-                response.map { it.name } shouldBe listOf("kotlin", "spring")
+                response.map { it.name } shouldContainExactlyInAnyOrder listOf("kotlin", "spring")
             }
         }
 
         `when`("이미 존재하는 태그와 새로운 태그를 같이 생성하면") {
             val tagNames = TagNames(listOf("kotlin", "spring", "python"))
-            tagService.addAll(tagNames)
+            tagService.saveTags(tagNames)
 
             then("기존에 등록된 태그는 중복이 발생하면 안된다") {
                 val response = tagRepository.findAll()
                 response.size shouldBe 3
-                response.map { it.name } shouldBe listOf("kotlin", "spring", "python")
+                response.map { it.name } shouldContainExactlyInAnyOrder listOf("kotlin", "spring", "python")
             }
         }
+    }
+
+    given("이미 작성된 게시글과 태그를 연결 하는 경우") {
+        val article = articleRepository.saveAndFlush(
+            Article(
+                authorProfileId = UlidCreator.getMonotonicUlid().toUuid(),
+                title = "test",
+                description = "test",
+                body = "test",
+            )
+        )
 
         `when`("주어진 태그 2개와 미리 작성 되어있던 게시글 1개를 연결 하면") {
             val tags = Tags(
                 listOf(Tag("kotlin"), Tag("springboot"))
             )
-            tagService.tagMappingWithArticle(tags, article.id)
+            articleTagRepository.saveAll(tags.toArticleTags(article.id))
 
             then("게시글 태그 2개가 실제 저장되어야 한다") {
                 articleTagRepository.findByArticleId(article.id).size shouldBe 2
             }
         }
+
+    }
+
+    given("사용자가 태그를 입력하지 않는 경우") {
+        `when`("null 값을 저장하면") {
+            tagService.saveTags(null)
+
+            then("에러가 발생하지 않고, DB에 아무것도 저장되지 않아야한다.") {
+                tagRepository.findAll().shouldBeEmpty()
+            }
+        }
+
+        `when`("비어있는 태그 리스트를 저장하면") {
+            tagService.saveTags(TagNames(emptyList()))
+
+            then("에러가 발생하지 않고, DB에 아무것도 저장되지 않아야한다.") {
+                tagRepository.findAll().shouldBeEmpty()
+            }
+        }
+
     }
 })

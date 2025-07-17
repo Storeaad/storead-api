@@ -1,38 +1,26 @@
 package com.storead.tag.application
 
-import com.storead.article.domain.ArticleTagRepository
 import com.storead.tag.domain.TagNames
 import com.storead.tag.domain.TagRepository
 import com.storead.tag.domain.Tags
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class TagService(
     private val tagRepository: TagRepository,
-    private val articleTagRepository: ArticleTagRepository,
 ) {
 
-    fun addAll(tagNames: TagNames): Tags {
-        val inputTags: Tags = tagNames.toTags()
-        val existsTags: Tags = findExistsTags(inputTags)
+    fun saveTags(tagNames: TagNames?): Tags {
+        if (tagNames == null) return Tags.empty()
 
-        val newTagsFromUserInput: Tags = existsTags.createNewTagsFrom(inputTags)
-        tagRepository.saveAll(newTagsFromUserInput.asList())
+        val requestTags: Tags = tagNames.toTags()
+        val existsTags: Tags = findExistsTags(requestTags)
 
-        return existsTags.extend(newTagsFromUserInput)
+        val newTags: Tags = requestTags.subtract(existsTags)
+        tagRepository.saveAll(newTags.asList())
+
+        return existsTags.extend(newTags)
     }
-
-    fun updateTags(tagNames: TagNames?, articleId: UUID): Tags? {
-        if (tagNames == null) return null
-
-        val tags = addAll(tagNames)
-        tagMappingWithArticle(tags, articleId)
-
-        return tags
-    }
-
-    fun tagMappingWithArticle(tags: Tags, articleId: UUID) = articleTagRepository.saveAll(tags.toArticleTags(articleId))
 
     private fun findExistsTags(tags: Tags): Tags = Tags(tagRepository.findByNameIn(tags.names()))
 }

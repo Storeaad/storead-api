@@ -5,25 +5,24 @@ import java.util.*
 
 
 data class Tags(
-    val tags: List<Tag>
+    private val values: List<Tag>
 ) {
-
-    fun createNewTagsFrom(anotherTags: Tags): Tags {
-        val existsTagNames: List<String> = names()
-
-        return Tags(
-            anotherTags.asList()
-                .filterNot { it.name in existsTagNames }
-                .map { Tag(it.name) }
-        )
+    companion object {
+        fun empty(): Tags = Tags(emptyList())
     }
 
-    fun toArticleTags(articleId: UUID): List<ArticleTag> = tags.map { ArticleTag(articleId = articleId, tagId = it.id) }
+    fun subtract(existingTags: Tags): Tags {
+        val existingTagNames: Set<String> = existingTags.names().toSet()
+        val newTags: List<Tag> = values.filterNot { existingTagNames.contains(it.name) }
+        return Tags(newTags)
+    }
 
-    fun extend(anotherTags: Tags) = Tags(tags + anotherTags.asList())
+    fun toArticleTags(articleId: UUID): List<ArticleTag> = values.map { ArticleTag(articleId = articleId, tagId = it.id) }
 
-    fun asList() = tags.toList()
+    fun extend(anotherTags: Tags) = Tags(values + anotherTags.values)
 
-    fun names() = tags.map { it.name }
+    fun asList() = values.toList()
+
+    fun names() = values.map { it.name }
 
 }
