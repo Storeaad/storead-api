@@ -1,6 +1,7 @@
 package com.storead.tag.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.article.domain.Article
 import com.storead.article.domain.ArticleRepository
 import com.storead.article.domain.ArticleTagRepository
@@ -9,23 +10,18 @@ import com.storead.tag.domain.TagNames
 import com.storead.tag.domain.TagRepository
 import com.storead.tag.domain.Tags
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("태그 서비스 테스트")
 class TagServiceTest(
     @Autowired private val tagService: TagService,
     @Autowired private val tagRepository: TagRepository,
     @Autowired private val articleRepository: ArticleRepository,
     @Autowired private val articleTagRepository: ArticleTagRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     beforeContainer {
         tagRepository.deleteAll()

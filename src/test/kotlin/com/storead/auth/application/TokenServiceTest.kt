@@ -1,27 +1,22 @@
 package com.storead.auth.application
 
+import com.storead.IntegrationTestSupport
 import com.storead.auth.application.request.TokenServiceRequest
 import com.storead.auth.domain.*
 import com.storead.profile.domain.ProfileRepository
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
-
-@ActiveProfiles("test")
-@SpringBootTest
 @DisplayName("인증 토큰 서비스 테스트")
 class TokenServiceTest(
     @Autowired private val tokenService: TokenService,
     @Autowired private val refreshTokenRepository: RefreshTokenRepository,
     @Autowired private val authRepository: AuthRepository,
     @Autowired private val profileRepository: ProfileRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     lateinit var testUser: User
 

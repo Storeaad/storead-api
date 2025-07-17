@@ -19,7 +19,7 @@ class ArticleThumbnailService(
 
     @Async
     @TransactionalEventListener
-    fun articleDelete(event: ArticleDeleteEvent) {
+    fun articleDeleted(event: ArticleDeleteEvent) {
         event.articleThumbnailImageId?.let {
             thumbnailRepository.deleteById(it)
         }

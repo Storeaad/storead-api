@@ -1,30 +1,26 @@
 package com.storead.profile.application
 
+import com.storead.IntegrationTestSupport
 import com.storead.auth.domain.PlatformType
 import com.storead.auth.domain.User
 import com.storead.auth.signal.UserCreateEvent
 import com.storead.profile.application.request.ProfileServiceUpdateRequest
 import com.storead.profile.domain.ProfileRepository
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.multipart.MultipartFile
 import java.nio.file.Files
 import kotlin.io.path.Path
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("프로필 서비스 테스트")
 class ProfileServiceTest(
     @Autowired private val profileService: ProfileService,
     @Autowired private val profileRepository: ProfileRepository
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     lateinit var user: User
     lateinit var profileImageFile: MultipartFile

@@ -1,21 +1,17 @@
 package com.storead.profile.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("프로필 레포지토리 테스트")
 class ProfileRepositoryTest(
     @Autowired private val profileRepository: ProfileRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     lateinit var userId: UUID
 

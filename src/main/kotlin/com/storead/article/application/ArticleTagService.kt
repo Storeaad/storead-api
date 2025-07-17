@@ -7,6 +7,7 @@ import com.storead.tag.domain.TagNames
 import com.storead.tag.domain.Tags
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.event.TransactionalEventListener
 import java.util.UUID
 
@@ -19,7 +20,7 @@ class ArticleTagService(
 
     @Async
     @TransactionalEventListener
-    fun articleDelete(event: ArticleDeleteEvent) {
+    fun articleDeleted(event: ArticleDeleteEvent) {
         articleTagRepository.deleteAllByArticleId(event.articleId)
     }
 
@@ -30,6 +31,7 @@ class ArticleTagService(
         articleTagRepository.saveAll(tags.toArticleTags(articleId))
     }
 
+    @Transactional
     fun updateArticleTags(articleId: UUID, tagNames: TagNames) {
         articleTagRepository.deleteAllByArticleId(articleId)
 

@@ -1,22 +1,26 @@
 package com.storead.article.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.extensions.spring.SpringTestExtension
+import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
+import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 
-@ActiveProfiles("test")
-@SpringBootTest
 @DisplayName("게시글 조회 레포지토리 테스트")
+@Transactional
 class ArticleViewRepositoryTest(
 
     @Autowired private val articleViewRepository: ArticleViewRepository,
 
-    ) : BehaviorSpec({
+    ) : IntegrationTestSupport({
+
+    extensions(SpringTestExtension(Root))
+
     given("사용자가 1번 읽은 게시글 조회수를 조회하는 경우") {
         val articleId = UlidCreator.getMonotonicUlid().toUuid()
         articleViewRepository.save(ArticleView(articleId, 1))
@@ -45,4 +49,19 @@ class ArticleViewRepositoryTest(
             }
         }
     }
+
+    given("사용자의 게시글이 삭제된 경우") {
+        val articleId = UUID.randomUUID()
+        articleViewRepository.save(ArticleView(articleId))
+
+        `when`("사용자가 게시글을 삭제하면") {
+            articleViewRepository.deleteByArticleId(articleId)
+
+            then("게시글 조회수가 삭제된다.") {
+                articleViewRepository.findByArticleId(articleId) shouldBe null
+            }
+
+        }
+    }
+
 })

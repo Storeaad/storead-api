@@ -1,6 +1,7 @@
 package com.storead.profile.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.profile.application.request.FollowRelationshipServiceRequest
 import com.storead.profile.application.request.FollowServiceRequest
 import com.storead.profile.domain.FollowRepository
@@ -10,7 +11,6 @@ import com.storead.profile.exception.FollowException
 import com.storead.profile.exception.ProfileException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.collections.shouldBeEmpty
@@ -19,13 +19,9 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeEmpty
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("팔로우 서비스 테스트")
 @Transactional
 class FollowServiceTest(
@@ -33,7 +29,7 @@ class FollowServiceTest(
     @Autowired private val followRepository: FollowRepository,
     @Autowired private val profileRepository: ProfileRepository,
 
-    ) : BehaviorSpec({
+    ) : IntegrationTestSupport({
 
     lateinit var testProfile1: Profile
     lateinit var testProfile2: Profile

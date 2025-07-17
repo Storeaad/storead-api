@@ -1,20 +1,18 @@
 package com.storead.article.application
 
+import com.storead.IntegrationTestSupport
 import com.storead.article.domain.ArticleThumbnailImageRepository
 import com.storead.common.storage.FileManager
 import com.storead.common.storage.LocalImageFileHandler
 import com.storead.common.storage.StoredFile
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.mock.web.MockMultipartFile
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -24,15 +22,13 @@ class MockFileHandler {
 }
 
 
-@SpringBootTest
 @Import(MockFileHandler::class)
-@ActiveProfiles("test")
 @DisplayName("게시글 썸네일 서비스 테스트")
 class ArticleThumbnailServiceTest(
     @Autowired private val imageFileHandler: FileManager,
     @Autowired private val articleThumbnailService: ArticleThumbnailService,
     @Autowired private val articleThumbnailImageRepository: ArticleThumbnailImageRepository
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     given("게시글에 썸네일 이미지가 들어오는 경우") {
         val multipartFile: MultipartFile = MockMultipartFile(

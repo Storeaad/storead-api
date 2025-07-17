@@ -1,5 +1,6 @@
 package com.storead.tag.domain
 
+import com.storead.IntegrationTestSupport
 import io.kotest.core.spec.DisplayName
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -16,7 +17,7 @@ class TagRepositoryTest(
 
     @Autowired private val tagRepository: TagRepository,
 
-    ) : BehaviorSpec({
+    ) : IntegrationTestSupport({
 
     beforeSpec {
         tagRepository.deleteAllInBatch()

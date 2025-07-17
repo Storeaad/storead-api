@@ -1,6 +1,7 @@
 package com.storead.article.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.article.application.request.*
 import com.storead.article.domain.*
 import com.storead.article.exception.ArticleException
@@ -9,21 +10,16 @@ import com.storead.profile.domain.ProfileRepository
 import com.storead.tag.domain.TagNames
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
-import java.util.UUID
+import java.util.*
 import kotlin.jvm.optionals.getOrNull
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("게시글 서비스 테스트")
 class ArticleServiceTest(
     @Autowired private val articleService: ArticleService,
@@ -34,7 +30,7 @@ class ArticleServiceTest(
     @Autowired private val articleThumbnailImageRepository: ArticleThumbnailImageRepository
 
 
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     extensions(SpringTestExtension(Root))
 

@@ -1,8 +1,8 @@
 package com.storead.profile.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.collections.shouldContain
@@ -10,18 +10,14 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("팔로우 레포지토리 테스트")
 @Transactional
 class FollowRepositoryTest(
     @Autowired private val followRepository: FollowRepository,
     @Autowired private val profileRepository: ProfileRepository
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     /**
      * 트랜잭션 라이프 사이클 범위 변경
