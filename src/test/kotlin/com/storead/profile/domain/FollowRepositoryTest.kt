@@ -29,12 +29,6 @@ class FollowRepositoryTest(
      */
     extensions(SpringTestExtension(Root))
 
-    afterSpec {
-        followRepository.deleteAll()
-        profileRepository.deleteAll()
-    }
-
-
     given("1번 유저가 2번 유저를 팔로우 하고 있는 경우") {
         val testProfile1 = profileRepository.saveAndFlush(
             Profile(
