@@ -43,5 +43,14 @@ class ArticleTagRepositoryTest(
                 result.size shouldBe 0
                 result.isEmpty() shouldBe true
         }
+
+        `when`("비어있는 게시글 태그를 저장하면") {
+            val result = articleTagRepository.saveAll(emptyList())
+
+            then("아무것도 저장되지 않는다.") {
+                result.isEmpty() shouldBe true
+            }
+        }
     }
+
 })
