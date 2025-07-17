@@ -2,9 +2,12 @@ package com.storead.article.application
 
 import com.storead.article.domain.ArticleThumbnailImage
 import com.storead.article.domain.ArticleThumbnailImageRepository
+import com.storead.article.signal.ArticleDeleteEvent
 import com.storead.common.storage.FileManager
 import com.storead.common.storage.UploadFile
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
+import org.springframework.transaction.event.TransactionalEventListener
 import org.springframework.web.multipart.MultipartFile
 
 
@@ -13,6 +16,15 @@ class ArticleThumbnailService(
     private val thumbnailRepository: ArticleThumbnailImageRepository,
     private val imageFileHandler: FileManager
 ) {
+
+    @Async
+    @TransactionalEventListener
+    fun articleDelete(event: ArticleDeleteEvent) {
+        event.articleThumbnailImageId?.let {
+            thumbnailRepository.deleteById(it)
+        }
+    }
+
     fun upload(thumbnailImage: MultipartFile?): ArticleThumbnailImage? {
         thumbnailImage ?: return null
 

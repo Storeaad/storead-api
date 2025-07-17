@@ -86,11 +86,14 @@ class ArticleService(
         return ArticleUpdateServiceResponse.from(article)
     }
 
+    @Transactional
     fun deleteArticle(request: ArticleDeleteServiceRequest) {
         val article = getMyArticle(request.articleId, request.authorId)
 
         article.delete()
         articleRepository.save(article)
+
+        eventPublisher.publishEvent(ArticleDeleteEvent.from(article))
     }
 
     private fun toPageResponse(

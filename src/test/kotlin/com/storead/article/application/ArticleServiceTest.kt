@@ -109,6 +109,12 @@ class ArticleServiceTest(
                     ArticlePublishStatus.DELETED
                 )?.title shouldBe "testArticleUpdated"
             }
+
+            then("게시글과 연관 되어있던 정보들도 삭제되어야한다.") {
+                articleViewRepository.findByArticleId(article.id) shouldBe null
+                articleTagRepository.findByArticleId(article.id).shouldBeEmpty()
+                articleThumbnailImageRepository.findById(thumbnailImageId).getOrNull() shouldBe null
+            }
         }
     }
 
