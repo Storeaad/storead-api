@@ -21,7 +21,7 @@ data class ArticleCreateRequest(
             title = title,
             description = description,
             body = body,
-            tags = TagNames.from(tagNames),
+            tagNames = TagNames.from(tagNames),
             publishStatus = publishStatus,
             bookId = bookId,
             thumbnailImageFile = null

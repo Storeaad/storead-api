@@ -11,7 +11,7 @@ data class ArticleCreateServiceRequest(
     val title: String,
     val description: String,
     val body: String,
-    val tags: TagNames,
+    val tagNames: TagNames,
     val publishStatus: ArticlePublishStatus = ArticlePublishStatus.PUBLISHED,
     val bookId: UUID? = null,
     val thumbnailImageFile: MultipartFile? = null,
