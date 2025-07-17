@@ -18,6 +18,8 @@ import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import java.util.UUID
+import kotlin.jvm.optionals.getOrNull
 
 
 @SpringBootTest
@@ -28,6 +30,10 @@ class ArticleServiceTest(
     @Autowired private val articleRepository: ArticleRepository,
     @Autowired private val profileRepository: ProfileRepository,
     @Autowired private val articleViewRepository: ArticleViewRepository,
+    @Autowired private val articleTagRepository: ArticleTagRepository,
+    @Autowired private val articleThumbnailImageRepository: ArticleThumbnailImageRepository
+
+
 ) : BehaviorSpec({
 
     extensions(SpringTestExtension(Root))
@@ -54,7 +60,7 @@ class ArticleServiceTest(
             title = "testArticle",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
 
         `when`("신규 게시글을 등록하면") {
@@ -73,7 +79,7 @@ class ArticleServiceTest(
             title = "testArticle",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
         articleRepository.save(request.toEntity())
 
@@ -90,14 +96,15 @@ class ArticleServiceTest(
     }
 
     given("인증된 사용자가 게시글을 삭제하기 위해 요청한 정보가 정상적으로 전달 되었을 때") {
+        val thumbnailImageId: UUID = UlidCreator.getMonotonicUlid().toUuid()
         val request = ArticleCreateServiceRequest(
             userId = testProfile.id,
             title = "testArticleUpdated",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
-        articleRepository.save(request.toEntity())
+        articleRepository.save(request.toEntity(thumbnailImageId))
 
         `when`("등록 되어있는 자신의 게시글을 삭제하면") {
             val article = articleRepository.findByTitle("testArticleUpdated")!!
