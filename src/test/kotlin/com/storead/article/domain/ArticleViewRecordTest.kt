@@ -1,15 +1,11 @@
 package com.storead.article.domain
 
-import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
+import com.storead.IntegrationTestSupport
 import io.kotest.matchers.shouldBe
-import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 import java.util.*
 
-@ActiveProfiles("test")
-@DisplayName("게시글 조회수 기록 도메인 테스트")
-class ArticleViewRecordTest() : BehaviorSpec({
+class ArticleViewRecordTest() : IntegrationTestSupport({
 
     given("인증된 사용자가 게시글을 조회 하려고 할 때") {
         val givenArticleId = UUID.randomUUID()

@@ -1,20 +1,16 @@
 package com.storead.auth.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("리프레시 토큰 레포지토리 도메인 테스트")
 class RefreshTokenRepositoryTest(
     @Autowired private val tokenRepository: RefreshTokenRepository
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     given("리프레시 토큰 저장소에서 사용자 ID로 조회할 때") {
         val userId: UUID = UlidCreator.getMonotonicUlid().toUuid()

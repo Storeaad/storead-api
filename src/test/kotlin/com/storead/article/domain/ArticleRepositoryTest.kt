@@ -1,19 +1,17 @@
 package com.storead.article.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.profile.domain.Profile
 import com.storead.profile.domain.ProfileRepository
+import com.storead.tag.domain.Tag
+import com.storead.tag.domain.TagRepository
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("게시글 레포지토리 테스트")
 class ArticleRepositoryTest(
     @Autowired private val articleRepository: ArticleRepository,
@@ -21,7 +19,7 @@ class ArticleRepositoryTest(
     @Autowired private val articleTagRepository: ArticleTagRepository,
     @Autowired private val profileRepository: ProfileRepository,
 
-    ) : BehaviorSpec({
+    ) : IntegrationTestSupport({
 
     lateinit var userId: UUID
     lateinit var profile: Profile
@@ -116,7 +114,10 @@ class ArticleRepositoryTest(
             then("게시글 작성자가 등록 했던 모든 게시글과 연관 정보를 반환한다") {
                 articles.size shouldBe 2
                 articles.map { it.article.title } shouldContainExactlyInAnyOrder listOf("title1", "title2")
-                articles.map { it.authorProfileName } shouldContainExactlyInAnyOrder listOf("testProfile", "testProfile")
+                articles.map { it.authorProfileName } shouldContainExactlyInAnyOrder listOf(
+                    "testProfile",
+                    "testProfile"
+                )
             }
         }
     }

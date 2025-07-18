@@ -1,18 +1,14 @@
 package com.storead.profile.domain
 
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("프로필 이미지 도메인 테스트")
 class ProfileImageTest(
     @Autowired private val profileImageRepository: ProfileImageRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     lateinit var savedProfileImage: ProfileImage
 

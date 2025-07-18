@@ -1,22 +1,18 @@
 package com.storead.book.domain
 
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDate
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("책 목차 도메인 테스트")
 class TableOfContentsTest(
     @Autowired val tocRepository: TableOfContentsRepository,
     @Autowired val bookRepository: BookRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     given("책 목차 데이터를 수집 한 경우") {
         val book = bookRepository.save(Book("12345", "JPA", "test", "test", LocalDate.now()))

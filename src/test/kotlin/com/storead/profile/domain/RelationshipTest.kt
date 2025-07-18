@@ -1,22 +1,18 @@
 package com.storead.profile.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.profile.application.response.FollowRelationshipResponse
 import com.storead.profile.web.request.FollowingRequest
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("팔로우 관계 도메인 테스트")
 class RelationshipTest(
     @Autowired private val profileRepository: ProfileRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     afterSpec {
         profileRepository.deleteAll()

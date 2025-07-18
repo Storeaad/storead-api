@@ -5,4 +5,5 @@ import java.util.UUID
 
 interface ArticleTagRepository : JpaRepository<ArticleTag, UUID> {
     fun findByArticleId(articleId: UUID): List<ArticleTag>
+    fun deleteAllByArticleId(articleId: UUID)
 }

@@ -1,33 +1,36 @@
 package com.storead.article.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.article.application.request.*
 import com.storead.article.domain.*
 import com.storead.article.exception.ArticleException
 import com.storead.profile.domain.Profile
 import com.storead.profile.domain.ProfileRepository
+import com.storead.tag.domain.TagNames
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("게시글 서비스 테스트")
 class ArticleServiceTest(
     @Autowired private val articleService: ArticleService,
     @Autowired private val articleRepository: ArticleRepository,
     @Autowired private val profileRepository: ProfileRepository,
     @Autowired private val articleViewRepository: ArticleViewRepository,
-) : BehaviorSpec({
+    @Autowired private val articleTagRepository: ArticleTagRepository,
+    @Autowired private val articleThumbnailImageRepository: ArticleThumbnailImageRepository
+
+
+) : IntegrationTestSupport({
 
     extensions(SpringTestExtension(Root))
 
@@ -53,7 +56,7 @@ class ArticleServiceTest(
             title = "testArticle",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
 
         `when`("신규 게시글을 등록하면") {
@@ -72,7 +75,7 @@ class ArticleServiceTest(
             title = "testArticle",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
         articleRepository.save(request.toEntity())
 
@@ -89,14 +92,15 @@ class ArticleServiceTest(
     }
 
     given("인증된 사용자가 게시글을 삭제하기 위해 요청한 정보가 정상적으로 전달 되었을 때") {
+        val thumbnailImageId: UUID = UlidCreator.getMonotonicUlid().toUuid()
         val request = ArticleCreateServiceRequest(
             userId = testProfile.id,
             title = "testArticleUpdated",
             description = "testDescription",
             body = "testBody",
-            tags = TagNames(listOf("python")),
+            tagNames = TagNames(listOf("python")),
         )
-        articleRepository.save(request.toEntity())
+        articleRepository.save(request.toEntity(thumbnailImageId))
 
         `when`("등록 되어있는 자신의 게시글을 삭제하면") {
             val article = articleRepository.findByTitle("testArticleUpdated")!!
@@ -107,6 +111,12 @@ class ArticleServiceTest(
                     article.id,
                     ArticlePublishStatus.DELETED
                 )?.title shouldBe "testArticleUpdated"
+            }
+
+            then("게시글과 연관 되어있던 정보들도 삭제되어야한다.") {
+                articleViewRepository.findByArticleId(article.id) shouldBe null
+                articleTagRepository.findByArticleId(article.id).shouldBeEmpty()
+                articleThumbnailImageRepository.findById(thumbnailImageId).getOrNull() shouldBe null
             }
         }
     }

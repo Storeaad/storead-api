@@ -1,26 +1,22 @@
 package com.storead.auth.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.auth.application.request.AuthServiceRequest
 import com.storead.auth.domain.AuthRepository
 import com.storead.auth.domain.PlatformType
 import com.storead.auth.exception.AuthException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 
-@ActiveProfiles("test")
-@SpringBootTest
 @DisplayName("사용자 인증 서비스 테스트")
 class AuthServiceTest(
     @Autowired private val authService: AuthService,
     @Autowired private val authRepository: AuthRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     beforeSpec {
         authRepository.deleteAll()

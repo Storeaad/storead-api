@@ -1,31 +1,27 @@
 package com.storead.article.application
 
 import com.github.f4b6a3.ulid.UlidCreator
+import com.storead.IntegrationTestSupport
 import com.storead.article.domain.ArticleView
 import com.storead.article.domain.ArticleViewRecord
 import com.storead.article.domain.ArticleViewRecordRepository
 import com.storead.article.domain.ArticleViewRepository
 import com.storead.article.signal.ArticleRetrieveEvent
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.extensions.spring.SpringTestExtension
 import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.shouldBe
 import org.awaitility.Awaitility.await
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.concurrent.TimeUnit
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("게시글 조회수 테스트")
 class ArticleViewTest(
     @Autowired private val articleViewService: ArticleViewService,
     @Autowired private val articleViewRepository: ArticleViewRepository,
     @Autowired private val articleViewRecordRepository: ArticleViewRecordRepository,
 
-    ) : BehaviorSpec({
+    ) : IntegrationTestSupport({
 
     extensions(SpringTestExtension(Root))
 
@@ -66,9 +62,11 @@ class ArticleViewTest(
             ArticleView(articleId)
         )
 
-        articleViewRecordRepository.save(ArticleViewRecord.record(
-            request.articleId, request.viewIp, request.authorId
-        ))
+        articleViewRecordRepository.save(
+            ArticleViewRecord.record(
+                request.articleId, request.viewIp, request.authorId
+            )
+        )
 
         `when`("동일한 사용자가 24시간 이내 게시글을 다시 조회 하면") {
             articleViewService.articleView(request)

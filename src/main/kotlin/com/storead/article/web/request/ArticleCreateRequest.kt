@@ -2,7 +2,7 @@ package com.storead.article.web.request
 
 import com.storead.article.application.request.ArticleCreateServiceRequest
 import com.storead.article.domain.ArticlePublishStatus
-import com.storead.article.domain.TagNames
+import com.storead.tag.domain.TagNames
 import java.util.*
 
 data class ArticleCreateRequest(
@@ -21,7 +21,7 @@ data class ArticleCreateRequest(
             title = title,
             description = description,
             body = body,
-            tags = TagNames.from(tagNames),
+            tagNames = TagNames.from(tagNames),
             publishStatus = publishStatus,
             bookId = bookId,
             thumbnailImageFile = null

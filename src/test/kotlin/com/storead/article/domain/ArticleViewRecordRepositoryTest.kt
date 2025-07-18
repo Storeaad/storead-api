@@ -1,20 +1,16 @@
 package com.storead.article.domain
 
+import com.storead.IntegrationTestSupport
 import io.kotest.core.annotation.DisplayName
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.ActiveProfiles
 import java.util.*
 
 
-@SpringBootTest
-@ActiveProfiles("test")
 @DisplayName("게시글 조회 기록 DB 영속성 테스트")
 class ArticleViewRecordRepositoryTest(
     @Autowired private val repository: ArticleViewRecordRepository,
-) : BehaviorSpec({
+) : IntegrationTestSupport({
 
     afterSpec {
         repository.deleteAll()

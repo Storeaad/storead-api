@@ -8,12 +8,14 @@ import com.storead.article.application.response.ArticleUpdateServiceResponse
 import com.storead.article.domain.Article
 import com.storead.article.domain.ArticleDetailJoinResult
 import com.storead.article.domain.ArticleRepository
-import com.storead.article.domain.Tags
+import com.storead.article.domain.ArticleTagRepository
+import com.storead.article.domain.ArticleThumbnailImageRepository
+import com.storead.article.domain.ArticleViewRepository
 import com.storead.article.exception.ArticleError
 import com.storead.article.exception.ArticleException
 import com.storead.article.signal.ArticleCreateEvent
+import com.storead.article.signal.ArticleDeleteEvent
 import com.storead.article.signal.ArticleRetrieveEvent
-import com.storead.book.application.BookService
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -22,8 +24,7 @@ import java.util.*
 
 @Service
 class ArticleService(
-    private val tagService: TagService,
-    private val bookService: BookService,
+    private val articleTagService: ArticleTagService,
     private val articleRepository: ArticleRepository,
     private val thumbnailService: ArticleThumbnailService,
     private val eventPublisher: ApplicationEventPublisher,
@@ -35,8 +36,8 @@ class ArticleService(
         val createArticle = createRequest.toEntity(thumbnailImageId = thumbnailImageId)
         val article: Article = articleRepository.save(createArticle.publish())
 
-        val tags: Tags = tagService.addAll(createRequest.tags)
-        tagService.tagMappingWithArticle(tags, article.id)
+        // NOTE: Article - Tag 매핑
+        articleTagService.createArticleTags(article.id, createRequest.tagNames)
 
         // NOTE: 조회수 생성
         eventPublisher.publishEvent(ArticleCreateEvent(article.id))
@@ -71,7 +72,10 @@ class ArticleService(
     fun updateArticle(request: ArticleUpdateServiceRequest): ArticleUpdateServiceResponse {
         val article = getMyArticle(request.articleId, request.authorId)
         val thumbnailId: UUID? = thumbnailService.update(request.thumbnailImageFile)?.id
-        tagService.updateTags(request.tagNames, article.id)
+
+        request.tagNames?.let {
+            articleTagService.updateArticleTags(article.id, request.tagNames)
+        }
 
         article.update(
             request.title,
@@ -87,11 +91,14 @@ class ArticleService(
         return ArticleUpdateServiceResponse.from(article)
     }
 
+    @Transactional
     fun deleteArticle(request: ArticleDeleteServiceRequest) {
         val article = getMyArticle(request.articleId, request.authorId)
 
         article.delete()
         articleRepository.save(article)
+
+        eventPublisher.publishEvent(ArticleDeleteEvent.from(article))
     }
 
     private fun toPageResponse(

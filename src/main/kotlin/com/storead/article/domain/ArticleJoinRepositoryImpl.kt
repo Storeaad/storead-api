@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.storead.book.domain.QBook
 import com.storead.profile.domain.QProfile
+import com.storead.tag.domain.QTag
 import org.springframework.stereotype.Repository
 import java.util.*
 

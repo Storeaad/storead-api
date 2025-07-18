@@ -7,6 +7,7 @@ import com.storead.article.domain.ArticleViewRepository
 import com.storead.article.exception.ArticleError
 import com.storead.article.exception.ArticleException
 import com.storead.article.signal.ArticleCreateEvent
+import com.storead.article.signal.ArticleDeleteEvent
 import com.storead.article.signal.ArticleRetrieveEvent
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
@@ -19,6 +20,13 @@ class ArticleViewService(
     private val articleViewRecordRepository: ArticleViewRecordRepository,
     private val articleViewRepository: ArticleViewRepository,
 ) {
+
+    @Async
+    @TransactionalEventListener
+    fun articleDeleted(event: ArticleDeleteEvent) {
+        articleViewRepository.deleteByArticleId(event.articleId)
+    }
+
 
     @Async
     @TransactionalEventListener

@@ -1,4 +1,4 @@
-package com.storead.article.domain
+package com.storead.tag.domain
 
 import com.github.f4b6a3.ulid.UlidCreator
 import io.kotest.core.annotation.DisplayName
@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @DisplayName("여러 태그들을 관리하는 도메인 테스트")
 class TagsTest(
-): BehaviorSpec({
+) : BehaviorSpec({
     given("유저가 게시글을 작성 또는 업데이트 하는 경우") {
         val articleId = UlidCreator.getMonotonicUlid().toUuid()
         val kotlinTag = Tag("kotlin")
@@ -28,8 +28,9 @@ class TagsTest(
             }
         }
 
-        `when`("이미 작성된 태그에서 새로운 태그를 입력할 때 중복으로 입력 하면") {
-            val newTags = tags.createNewTagsFrom(Tags(listOf(Tag("kotlin"))))
+        `when`("요청된 태그가 모두 기존에 존재하는 태그일 경우") {
+            val requestTags = Tags(listOf(Tag("kotlin")))
+            val newTags = requestTags.subtract(tags)
 
             then("아무것도 반환되지 않아야한다") {
                 newTags.asList().shouldBeEmpty()
@@ -37,7 +38,8 @@ class TagsTest(
         }
 
         `when`("이미 작성된 태그에서 새로운 태그를 입력하면") {
-            val newTags = tags.createNewTagsFrom(Tags(listOf(Tag("django"))))
+            val requestTags = Tags(listOf(Tag("django")))
+            val newTags = requestTags.subtract(tags)
 
             then("중복된 태그를 제외하고 새롭게 추가된 태그만 반환해야한다") {
                 newTags.asList().size shouldBe 1
@@ -45,9 +47,19 @@ class TagsTest(
             }
         }
 
+        `when`("이미 작성된 태그에서 빈 태그를 입력하면") {
+            val requestTags = Tags(emptyList())
+            val newTags = requestTags.subtract(tags)
+
+            then("아무것도 반환되지 않아야한다.") {
+                newTags.asList().shouldBeEmpty()
+            }
+        }
+
         `when`("기존에 작성된 태그와 신규로 입력한 태그를 합치면") {
-            val newTags = tags.createNewTagsFrom(Tags(listOf(Tag("django"))))
-            val result = newTags.extend(tags)
+            val requestTags = Tags(listOf(Tag("django")))
+            val newTags = requestTags.subtract(tags)
+            val result = tags.extend(newTags)
 
             then("입력한 모든 태그가 반환되어야한다") {
                 result.asList().size shouldBe 3
@@ -64,6 +76,14 @@ class TagsTest(
                     kotlinTag.id to articleId,
                     springBootTag.id to articleId
                 )
+            }
+        }
+
+        `when`("빈 태그를 아티클과 연결하려고 하면") {
+            val tags = TagNames(emptyList()).toTags()
+            val articleTag = tags.toArticleTags(articleId)
+            then("연결되지 않아야한다.") {
+                articleTag.shouldBeEmpty()
             }
         }
     }
