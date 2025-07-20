@@ -24,7 +24,7 @@ class ArticleViewService(
     @Async
     @TransactionalEventListener
     fun articleDeleted(event: ArticleDeleteEvent) {
-        articleViewRepository.deleteByArticleId(event.articleId)
+        articleViewRepository.deleteAllByArticleId(event.articleId)
     }
 
 

@@ -5,5 +5,5 @@ import java.util.UUID
 
 interface ArticleViewRepository : JpaRepository<ArticleView, UUID> {
     fun findByArticleId(articleId: UUID): ArticleView?
-    fun deleteByArticleId(articleId: UUID)
+    fun deleteAllByArticleId(articleId: UUID)
 }

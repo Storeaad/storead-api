@@ -55,7 +55,7 @@ class ArticleViewRepositoryTest(
         articleViewRepository.save(ArticleView(articleId))
 
         `when`("사용자가 게시글을 삭제하면") {
-            articleViewRepository.deleteByArticleId(articleId)
+            articleViewRepository.deleteAllByArticleId(articleId)
 
             then("게시글 조회수가 삭제된다.") {
                 articleViewRepository.findByArticleId(articleId) shouldBe null
