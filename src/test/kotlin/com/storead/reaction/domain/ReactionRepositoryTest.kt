@@ -5,15 +5,21 @@ import com.storead.IntegrationTestSupport
 import com.storead.common.domain.EntityType.ARTICLE
 import com.storead.reaction.domain.ReactionType.*
 import io.kotest.core.spec.DisplayName
+import io.kotest.extensions.spring.SpringTestExtension
+import io.kotest.extensions.spring.SpringTestLifecycleMode.Root
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @DisplayName("반응 레포지토리 테스트")
+@Transactional
 class ReactionRepositoryTest(
     @Autowired private val reactionRepository: ReactionRepository,
 ) : IntegrationTestSupport({
+
+    extensions(SpringTestExtension(Root))
 
     fun createReactionWithLikeToArticle(
         userId: UUID,
