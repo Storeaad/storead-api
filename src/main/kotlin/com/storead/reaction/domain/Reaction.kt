@@ -19,8 +19,17 @@ class Reaction(
     val subjectType: EntityType,
 
     @Enumerated(EnumType.STRING)
-    val reactionType: ReactionType,
+    var reactionType: ReactionType,
 
 ): BaseEntity() {
+    fun updateReactionType(reactionType: ReactionType) {
+        this.reactionType = reactionType
+    }
+
+    fun hasAlreadyReacted(userId: UUID, subjectId: UUID, reactionType: ReactionType): Boolean {
+        return this.userId == userId
+                && this.subjectId == subjectId
+                && this.reactionType == reactionType
+    }
 
 }
