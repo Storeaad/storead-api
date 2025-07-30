@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
 interface ReactionRepository : JpaRepository<Reaction, UUID> {
+    fun findByUserIdAndSubjectId(userId: UUID, subjectId: UUID): Reaction?
+
     fun findAllByUserId(userId: UUID): List<Reaction>
 
     fun findAllBySubjectIdAndSubjectType(subjectId: UUID, subjectType: EntityType): List<Reaction>
